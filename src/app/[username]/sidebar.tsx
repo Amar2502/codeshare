@@ -3,9 +3,13 @@
 import React, { useState } from "react";
 import { Settings, FolderOpen, User, Folders } from "lucide-react";
 import Link from "next/link";
+import { auth } from "@/auth";
+import Image from "next/image";
 
 const SideBar: React.FC = () => {
   const [activeSection, setActiveSection] = useState("files");
+  // const session = await auth();
+  // const profileimage = session?.user?.image ?? "/default-profile.png";
 
   return (
     <div className="h-full">
@@ -13,7 +17,13 @@ const SideBar: React.FC = () => {
       <div className="w-64 shadow-xl h-full border-r border-gray-700">
         <div className="p-4 border-b border-gray-700">
           <div className="text-2xl font-bold text-white flex items-center gap-4">
-            <User size={20} /> Profile
+            {/* <Image
+              src={profileimage}
+              alt="Profile Image"
+              width={100}
+              height={100}
+            /> */}
+            Profile
           </div>
         </div>
 

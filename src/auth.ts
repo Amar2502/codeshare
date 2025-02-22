@@ -38,7 +38,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session }) {
       if (session.user) {
         const dbUser = await User.findOne({ email: session.user.email });
+        session.user.name = dbUser.name;
         session.user.id = dbUser._id.toString(); // Attach DB user ID to session
+        session.user.projects = dbUser.projects;
       }
       return session;
     },

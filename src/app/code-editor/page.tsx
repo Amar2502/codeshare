@@ -26,20 +26,12 @@ const defaultHTML = `<!DOCTYPE html>
 </html>`;
 
 const defaultCSS = `body {
-  font-family: system-ui, sans-serif;
   margin: 0;
-  padding: 20px;
-  background: #f0f0f0;
+  background: black;
 }
 
 h1 {
-  color: #333;
-  animation: fadeIn 0.5s ease-in;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  color: white;
 }`;
 
 const defaultJS = `// Your JavaScript code here
