@@ -1,25 +1,24 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-// Define the admin schema
-const userSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true, // Email should be unique for each admin
-    },
-    password: {
-      type: String,
-      required: true,
-    }
-}
-);
+const ProjectSchema = new mongoose.Schema({
+  project_name: { type: String, required: true },
+  project_description: { type: String, required: true },
+  files: {
+    html: { type: String, required: true },
+    css: { type: String, required: true },
+    javascript: { type: String, required: true },
+  },
+});
 
-// Create a model from the schema
-const User = mongoose.models.User || mongoose.model('User', userSchema);
+const UserSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  image: { type: String },
+  password: { type: String, required: false },
+  project: { type: ProjectSchema }, // ✅ Reference the schema properly
+  createdAt: { type: Date, default: Date.now },
+});
+
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
 export default User;

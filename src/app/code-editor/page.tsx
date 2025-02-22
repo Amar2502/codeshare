@@ -11,11 +11,6 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
 
 const defaultHTML = `<!DOCTYPE html>
 <html>
@@ -52,7 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 type FileType = "html" | "css" | "js";
 
-function App() {
+async function App() {
+
   const [activeFile, setActiveFile] = useState<FileType>("html");
   const [html, setHtml] = useState(defaultHTML);
   const [css, setCss] = useState(defaultCSS);
