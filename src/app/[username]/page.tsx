@@ -15,8 +15,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-const WorkspaceDashboard:React.FC = () => {
+const WorkspaceDashboard:React.FC = async () => {
+
+  const session = await auth();
+    console.log("..........", session);
+    const name = session?.user?.name
+  
+    if(!name) redirect(`/`)
+
   return (
     <div className="flex h-screen bg-gray-900">
       <div className="flex-1 overflow-auto">

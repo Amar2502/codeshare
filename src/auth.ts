@@ -19,9 +19,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const userExists = await User.findOne({ email: profile?.email });
 
         if (!userExists) {
+          const username: string = profile?.name?.split(" ")[0] || "";
+          
           // Create new user in MongoDB
           await User.create({
-            name: profile?.name,
+            name: username,
             email: profile?.email,
             image: profile?.picture,
           });

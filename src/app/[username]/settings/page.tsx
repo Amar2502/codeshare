@@ -9,8 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react"
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-const SettingsPage = () => {
+const SettingsPage = async () => {
   const [settings, setSettings] = useState({
     emailNotifications: true,
     pushNotifications: false,
@@ -20,6 +22,12 @@ const SettingsPage = () => {
     name: "John Doe",
     email: "john@example.com",
   });
+
+  const session = await auth();
+      console.log("..........", session);
+      const name = session?.user?.name
+    
+      if(!name) redirect(`/`)
 
   const handleSettingChange = (key: keyof typeof settings, value: any) => {
     setSettings((prev) => ({

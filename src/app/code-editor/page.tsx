@@ -11,6 +11,8 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 const defaultHTML = `<!DOCTYPE html>
 <html>
@@ -48,6 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
 type FileType = "html" | "css" | "js";
 
 async function App() {
+
+  const session = await auth();
+      console.log("..........", session);
+      const name = session?.user?.name
+    
+      if(!name) redirect(`/`)
 
   const [activeFile, setActiveFile] = useState<FileType>("html");
   const [html, setHtml] = useState(defaultHTML);

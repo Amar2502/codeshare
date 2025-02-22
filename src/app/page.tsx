@@ -11,10 +11,19 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { signIn } from "@/auth";
+import { auth, signIn } from "@/auth";
 import { redirect } from "next/navigation";
 
-const Home = () => {
+const Home = async () => {
+
+  const session = await auth();
+  console.log("..........", session);
+  const name = session?.user?.name
+  const username = name?.split(" ")[0]
+
+  if(name) redirect(`/${username}`)
+  
+
   return (
     <div className="min-h-screen bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 py-16">
