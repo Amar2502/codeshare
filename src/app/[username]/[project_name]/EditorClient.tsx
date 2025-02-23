@@ -1,3 +1,4 @@
+// app/editor/EditorClient.tsx
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
@@ -11,8 +12,10 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+
+interface EditorClientProps {
+  userName: string;
+}
 
 const defaultHTML = `<!DOCTYPE html>
 <html>
@@ -41,14 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 type FileType = "html" | "css" | "js";
 
-async function App() {
-
-  const session = await auth();
-      console.log("..........", session);
-      const name = session?.user?.name
-    
-      if(!name) redirect(`/`)
-
+const EditorClient: React.FC<EditorClientProps> = ({ userName }) => {
   const [activeFile, setActiveFile] = useState<FileType>("html");
   const [html, setHtml] = useState(defaultHTML);
   const [css, setCss] = useState(defaultCSS);
@@ -167,6 +163,11 @@ async function App() {
             <Share className="w-4 h-4" />
             Share Project
           </button>
+          {showShareNotification && (
+            <div className="absolute top-full right-0 mt-2 px-4 py-2 bg-green-500 text-white rounded-md shadow-lg animate-fade-in-down">
+              Link copied to clipboard!
+            </div>
+          )}
         </div>
       </nav>
 
@@ -214,45 +215,44 @@ async function App() {
           </button>
         </div>
 
-            <div className="flex-1 relative">
-              <div className="absolute top-0 left-0 right-0 h-9 bg-black/30 backdrop-blur-md border-b border-white/10 flex items-center px-4">
-                <span className="text-sm text-purple-200/60">
-                  {`index.${activeFile}`}
-                </span>
-              </div>
-              <div className="pt-9 h-full">
-                <Editor
-                  height="100%"
-                  defaultLanguage={getLanguage(activeFile)}
-                  language={getLanguage(activeFile)}
-                  theme="vs-dark"
-                  value={getCurrentCode()}
-                  onChange={handleCodeChange}
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 14,
-                    wordWrap: "on",
-                    automaticLayout: true,
-                    padding: { top: 16 },
-                    smoothScrolling: true,
-                    // cursorSmoothCaretAnimation: true,
-                  }}
-                />
-              </div>
-            </div>
-            <div className="w-[40%] relative">
-              <div className="absolute top-0 left-0 right-0 h-9 bg-black/30 backdrop-blur-md border-b border-white/10 flex items-center px-4">
-                <span className="text-sm text-blue-200/60">Preview</span>
-              </div>
-              <div className="pt-9 h-full bg-white">
-                <iframe
-                  title="preview"
-                  srcDoc={combinedCode}
-                  className="w-full h-full border-none"
-                  sandbox="allow-scripts"
-                />
-              </div>
-            </div>
+        <div className="flex-1 relative">
+          <div className="absolute top-0 left-0 right-0 h-9 bg-black/30 backdrop-blur-md border-b border-white/10 flex items-center px-4">
+            <span className="text-sm text-purple-200/60">
+              {`index.${activeFile}`}
+            </span>
+          </div>
+          <div className="pt-9 h-full">
+            <Editor
+              height="100%"
+              defaultLanguage={getLanguage(activeFile)}
+              language={getLanguage(activeFile)}
+              theme="vs-dark"
+              value={getCurrentCode()}
+              onChange={handleCodeChange}
+              options={{
+                minimap: { enabled: false },
+                fontSize: 14,
+                wordWrap: "on",
+                automaticLayout: true,
+                padding: { top: 16 },
+                smoothScrolling: true,
+              }}
+            />
+          </div>
+        </div>
+        <div className="w-[40%] relative">
+          <div className="absolute top-0 left-0 right-0 h-9 bg-black/30 backdrop-blur-md border-b border-white/10 flex items-center px-4">
+            <span className="text-sm text-blue-200/60">Preview</span>
+          </div>
+          <div className="pt-9 h-full bg-white">
+            <iframe
+              title="preview"
+              srcDoc={combinedCode}
+              className="w-full h-full border-none"
+              sandbox="allow-scripts"
+            />
+          </div>
+        </div>
       </div>
 
       <style jsx global>{`
@@ -272,6 +272,6 @@ async function App() {
       `}</style>
     </div>
   );
-}
+};
 
-export default App;
+export default EditorClient;

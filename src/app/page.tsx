@@ -17,7 +17,6 @@ import { redirect } from "next/navigation";
 const Home = async () => {
 
   const session = await auth();
-  console.log("..........", session);
   const name = session?.user?.name
   const username = name?.split(" ")[0]
 
