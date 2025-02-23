@@ -24,6 +24,7 @@ export default async function EditorPage({ params }: PageProps) {
     return <div>Project not found</div>;
   }
 
+  // return <EditorClient />
   // return <EditorClient project={projectDetails}/>
   return <h1>Hello World</h1>;
 }

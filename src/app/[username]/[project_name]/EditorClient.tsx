@@ -33,13 +33,18 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 type Project = {
+  _id: string;
   project_name: string;
   project_description: string;
   files: {
     html: string;
     css: string;
     javascript: string;
-  },
+  };
+}
+
+type EditorClientProps = {
+  project: Project;
 }
 
 type FileType = "html" | "css" | "js";
@@ -54,11 +59,12 @@ const navItems = [
   { icon: Settings, label: "Settings", group: "right" },
 ] as const;
 
-export default function EditorClient(project: Project) {
+export default function EditorClient({ project }: EditorClientProps) {
 
-  const userhtml = project.files.html;
-  const usercss = project.files.css;
-  const userjs = project.files.javascript;
+  const { files } = project;
+  const userhtml = files.html;
+  const usercss = files.css;
+  const userjs = files.javascript;
 
   const [activeFile, setActiveFile] = useState<FileType>("html");
   const [html, setHtml] = useState(userhtml);
