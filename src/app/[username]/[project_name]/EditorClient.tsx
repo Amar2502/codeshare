@@ -32,6 +32,16 @@ import {
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
 
+type Project = {
+  project_name: string;
+  project_description: string;
+  files: {
+    html: string;
+    css: string;
+    javascript: string;
+  },
+}
+
 type FileType = "html" | "css" | "js";
 
 // Define nav items for better organization and reusability
@@ -44,27 +54,16 @@ const navItems = [
   { icon: Settings, label: "Settings", group: "right" },
 ] as const;
 
-const defaultHTML = `<!DOCTYPE html>
-<html>
-  <body>
-    <h1>Welcome to My Website</h1>
-    <p>Start editing to see your changes!</p>
-  </body>
-</html>`;
+export default function EditorClient(project: Project) {
 
-const defaultCSS = `body {
-  margin: 0;
-  background: #000;
-  color: #fff;
-}`;
+  const userhtml = project.files.html;
+  const usercss = project.files.css;
+  const userjs = project.files.javascript;
 
-const defaultJS = `console.log('Website loaded!')`;
-
-export default function EditorClient() {
   const [activeFile, setActiveFile] = useState<FileType>("html");
-  const [html, setHtml] = useState(defaultHTML);
-  const [css, setCss] = useState(defaultCSS);
-  const [js, setJs] = useState(defaultJS);
+  const [html, setHtml] = useState(userhtml);
+  const [css, setCss] = useState(usercss);
+  const [js, setJs] = useState(userjs);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const handleCodeChange = (value: string | undefined) => {

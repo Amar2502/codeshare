@@ -49,7 +49,7 @@ const createNewProject = async (formData: FormData) => {
   }
 };
 
-const getProjectDetails = async (pname: string) => {
+export const getProjectDetails = async (pname: string) => {
   try {
     await dbConnect(); // Ensure database connection
 
