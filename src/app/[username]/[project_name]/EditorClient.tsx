@@ -1,27 +1,51 @@
-// app/editor/EditorClient.tsx
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState } from "react";
 import Editor from "@monaco-editor/react";
 import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+import { cn } from "@/lib/utils";
+import {
   Code,
-  Share,
   FileText,
   FileJson,
   FileCode,
-  ChevronLeft,
-  ChevronRight,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Save,
+  Share,
+  Settings,
+  Download,
+  Copy,
+  PlayCircle,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
 
-interface EditorClientProps {
-  userName: string;
-}
+type FileType = "html" | "css" | "js";
+
+// Define nav items for better organization and reusability
+const navItems = [
+  { icon: Save, label: "Save Project", group: "left" },
+  { icon: Share, label: "Share Project", group: "left" },
+  { icon: Copy, label: "Copy Code", group: "right" },
+  { icon: Download, label: "Download Files", group: "right" },
+  { icon: PlayCircle, label: "Run Project", group: "right" },
+  { icon: Settings, label: "Settings", group: "right" },
+] as const;
 
 const defaultHTML = `<!DOCTYPE html>
 <html>
-  <head>
-    <title>My Web Project</title>
-  </head>
   <body>
     <h1>Welcome to My Website</h1>
     <p>Start editing to see your changes!</p>
@@ -30,76 +54,58 @@ const defaultHTML = `<!DOCTYPE html>
 
 const defaultCSS = `body {
   margin: 0;
-  background: black;
-}
-
-h1 {
-  color: white;
+  background: #000;
+  color: #fff;
 }`;
 
-const defaultJS = `// Your JavaScript code here
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('Website loaded!')
-})`;
+const defaultJS = `console.log('Website loaded!')`;
 
-type FileType = "html" | "css" | "js";
-
-const EditorClient: React.FC<EditorClientProps> = ({ userName }) => {
+export default function EditorClient() {
   const [activeFile, setActiveFile] = useState<FileType>("html");
   const [html, setHtml] = useState(defaultHTML);
   const [css, setCss] = useState(defaultCSS);
   const [js, setJs] = useState(defaultJS);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [showShareNotification, setShowShareNotification] = useState(false);
 
-  const handleCodeChange = useCallback(
-    (value: string | undefined) => {
-      switch (activeFile) {
-        case "html":
-          setHtml(value || "");
-          break;
-        case "css":
-          setCss(value || "");
-          break;
-        case "js":
-          setJs(value || "");
-          break;
-      }
-    },
-    [activeFile]
-  );
+  const handleCodeChange = (value: string | undefined) => {
+    switch (activeFile) {
+      case "html":
+        setHtml(value || "");
+        break;
+      case "css":
+        setCss(value || "");
+        break;
+      case "js":
+        setJs(value || "");
+        break;
+    }
+  };
 
   const getLanguage = (type: FileType) => {
-    switch (type) {
-      case "html":
-        return "html";
-      case "css":
-        return "css";
-      case "js":
-        return "javascript";
-    }
+    const languages = {
+      html: "html",
+      css: "css",
+      js: "javascript",
+    };
+    return languages[type];
   };
 
   const getCurrentCode = () => {
-    switch (activeFile) {
-      case "html":
-        return html;
-      case "css":
-        return css;
-      case "js":
-        return js;
-    }
+    const codeMap = {
+      html,
+      css,
+      js,
+    };
+    return codeMap[activeFile];
   };
 
   const getFileIcon = (type: FileType) => {
-    switch (type) {
-      case "html":
-        return <FileText className="w-4 h-4" />;
-      case "css":
-        return <FileJson className="w-4 h-4" />;
-      case "js":
-        return <FileCode className="w-4 h-4" />;
-    }
+    const icons = {
+      html: <FileText className="w-4 h-4" />,
+      css: <FileJson className="w-4 h-4" />,
+      js: <FileCode className="w-4 h-4" />,
+    };
+    return icons[type];
   };
 
   const combinedCode = `
@@ -109,169 +115,183 @@ const EditorClient: React.FC<EditorClientProps> = ({ userName }) => {
         <style>${css}</style>
       </head>
       <body>
-        ${html.replace(/<!DOCTYPE html>|<\/?html>|<\/?body>|<\/?head>/g, "")}
+        ${html.replace(/<!DOCTYPE html>|<\/?html>|<\/?body>/g, "")}
         <script>${js}</script>
       </body>
     </html>
   `;
 
-  const handleShare = useCallback(() => {
-    const projectData = {
-      html,
-      css,
-      js,
-    };
-    const encoded = btoa(JSON.stringify(projectData));
-    const url = `${window.location.origin}?project=${encoded}`;
-    navigator.clipboard.writeText(url);
-    setShowShareNotification(true);
-    setTimeout(() => setShowShareNotification(false), 3000);
-  }, [html, css, js]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const sharedProject = params.get("project");
-    if (sharedProject) {
-      try {
-        const decoded = JSON.parse(atob(sharedProject));
-        setHtml(decoded.html);
-        setCss(decoded.css);
-        setJs(decoded.js);
-      } catch (e) {
-        console.error("Invalid shared project");
-      }
-    }
-  }, []);
+  const renderNavItem = (item: (typeof navItems)[number], index: number) => (
+    <Tooltip key={`nav-${item.label}`}>
+      <TooltipTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 text-purple-400 hover:text-purple-300"
+        >
+          <item.icon className="h-5 w-5" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>{item.label}</TooltipContent>
+    </Tooltip>
+  );
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      <nav className="bg-black/20 backdrop-blur-xl border-b border-white/10 h-14 flex items-center px-4">
-        <div className="flex items-center gap-2 flex-1">
-          <Code className="w-6 h-6 text-purple-400 animate-pulse" />
-          <div>
-            <h1 className="text-lg font-semibold text-white">WebEditor</h1>
-            <p className="text-xs text-purple-400">
-              HTML, CSS, and JavaScript Editor
-            </p>
-          </div>
-        </div>
-        <div className="relative">
-          <button
-            onClick={handleShare}
-            className="flex items-center gap-2 px-4 py-1.5 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-all duration-200 transform hover:scale-105 hover:shadow-lg hover:shadow-purple-500/40 text-sm font-medium"
-          >
-            <Share className="w-4 h-4" />
-            Share Project
-          </button>
-          {showShareNotification && (
-            <div className="absolute top-full right-0 mt-2 px-4 py-2 bg-green-500 text-white rounded-md shadow-lg animate-fade-in-down">
-              Link copied to clipboard!
-            </div>
-          )}
-        </div>
-      </nav>
-
-      <div className="h-[calc(100vh-3.5rem)] flex">
+    <TooltipProvider delayDuration={0}>
+      <div className="h-screen flex bg-black">
+        {/* Sidebar */}
         <div
-          className={`transition-all duration-300 ease-in-out ${
-            isSidebarOpen ? "w-[15%] min-w-[200px] max-w-[300px]" : "w-12"
-          } bg-black/30 backdrop-blur-lg text-gray-300 relative`}
+          className={cn(
+            "bg-zinc-950 border-r border-purple-900/20 transition-all duration-300 flex flex-col",
+            isSidebarOpen ? "w-64" : "w-14"
+          )}
         >
-          <div
-            className={`p-4 ${
-              isSidebarOpen ? "opacity-100" : "opacity-0"
-            } transition-opacity duration-200`}
-          >
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-purple-300 mb-3">
-              Files
-            </h2>
-            <ul className="space-y-1">
-              {(["html", "css", "js"] as FileType[]).map((type) => (
-                <li key={type}>
-                  <button
-                    className={`w-full text-left px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 transition-all duration-200 ${
-                      activeFile === type
-                        ? "bg-purple-600/20 text-purple-100 shadow-lg shadow-purple-500/10"
-                        : "hover:bg-purple-500/10 text-gray-300 hover:shadow-md hover:shadow-purple-500/5"
-                    }`}
-                    onClick={() => setActiveFile(type)}
-                  >
-                    {getFileIcon(type)}
-                    {`index.${type}`}
-                  </button>
-                </li>
-              ))}
-            </ul>
+          {/* Sidebar Header */}
+          <div className="p-4 border-b border-purple-900/20 flex items-center gap-3">
+            <Code className="h-6 w-6 text-purple-400" />
+            <div
+              className={cn(
+                "transition-all duration-300 overflow-hidden",
+                !isSidebarOpen ? "opacity-0 w-0" : "opacity-100 w-auto"
+              )}
+            >
+              <h1 className="font-semibold text-white">WebEditor</h1>
+              <p className="text-xs text-purple-400">Code Editor</p>
+            </div>
           </div>
-          <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="absolute -right-3 top-1/2 transform -translate-y-1/2 bg-black/40 p-1.5 rounded-full border border-white/10 text-purple-400 hover:text-purple-300 transition-all duration-200 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/20 z-10"
-          >
-            {isSidebarOpen ? (
-              <ChevronLeft className="w-4 h-4" />
-            ) : (
-              <ChevronRight className="w-4 h-4" />
-            )}
-          </button>
+
+          {/* Sidebar Files List */}
+          <ScrollArea className="h-[calc(100vh-5rem)]">
+            <div className="p-2 space-y-2">
+              <h2
+                className={cn(
+                  "text-xs font-semibold text-purple-300/70 uppercase tracking-wider transition-all duration-300",
+                  !isSidebarOpen ? "opacity-0 w-0 h-0" : "opacity-100 w-auto"
+                )}
+              >
+                Files
+              </h2>
+              <div className="space-y-1">
+                {(["html", "css", "js"] as const).map((type) => (
+                  <Tooltip key={`file-${type}`}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className={cn(
+                          "flex items-center justify-start gap-3 text-purple-100/70 hover:text-purple-100 hover:bg-purple-500/10 transition-all duration-300",
+                          isSidebarOpen ? "w-full px-4" : "w-12 justify-center",
+                          activeFile === type &&
+                            "bg-purple-500/20 text-purple-100"
+                        )}
+                        onClick={() => setActiveFile(type)}
+                      >
+                        {getFileIcon(type)}
+                        <span
+                          className={cn(
+                            "transition-all duration-300 overflow-hidden",
+                            !isSidebarOpen
+                              ? "opacity-0 w-0"
+                              : "opacity-100 w-auto"
+                          )}
+                        >
+                          {`index.${type}`}
+                        </span>
+                      </Button>
+                    </TooltipTrigger>
+                    {!isSidebarOpen && (
+                      <TooltipContent>{`index.${type}`}</TooltipContent>
+                    )}
+                  </Tooltip>
+                ))}
+              </div>
+            </div>
+          </ScrollArea>
         </div>
 
-        <div className="flex-1 relative">
-          <div className="absolute top-0 left-0 right-0 h-9 bg-black/30 backdrop-blur-md border-b border-white/10 flex items-center px-4">
-            <span className="text-sm text-purple-200/60">
-              {`index.${activeFile}`}
-            </span>
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col">
+          {/* Top Navigation Bar */}
+          <div className="h-14 border-b border-purple-900/20 bg-zinc-950 flex items-center justify-between px-4">
+            <div className="flex items-center gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
+                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                  >
+                    {isSidebarOpen ? (
+                      <PanelLeftClose className="h-5 w-5" />
+                    ) : (
+                      <PanelLeftOpen className="h-5 w-5" />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Toggle Sidebar</TooltipContent>
+              </Tooltip>
+              <Separator
+                orientation="vertical"
+                className="h-6 bg-purple-900/20"
+              />
+              {navItems
+                .filter((item) => item.group === "left")
+                .map(renderNavItem)}
+            </div>
+
+            <div className="flex items-center gap-2">
+              {navItems
+                .filter((item) => item.group === "right")
+                .map(renderNavItem)}
+              <Separator
+                orientation="vertical"
+                className="h-6 bg-purple-900/20"
+              />
+            </div>
           </div>
-          <div className="pt-9 h-full">
-            <Editor
-              height="100%"
-              defaultLanguage={getLanguage(activeFile)}
-              language={getLanguage(activeFile)}
-              theme="vs-dark"
-              value={getCurrentCode()}
-              onChange={handleCodeChange}
-              options={{
-                minimap: { enabled: false },
-                fontSize: 14,
-                wordWrap: "on",
-                automaticLayout: true,
-                padding: { top: 16 },
-                smoothScrolling: true,
-              }}
-            />
-          </div>
-        </div>
-        <div className="w-[40%] relative">
-          <div className="absolute top-0 left-0 right-0 h-9 bg-black/30 backdrop-blur-md border-b border-white/10 flex items-center px-4">
-            <span className="text-sm text-blue-200/60">Preview</span>
-          </div>
-          <div className="pt-9 h-full bg-white">
-            <iframe
-              title="preview"
-              srcDoc={combinedCode}
-              className="w-full h-full border-none"
-              sandbox="allow-scripts"
-            />
+
+          {/* Editor and Preview */}
+          <div className="flex-1">
+            <ResizablePanelGroup direction="horizontal">
+              <ResizablePanel defaultSize={55}>
+                <div className="h-[calc(100vh-3.5rem)] relative bg-zinc-950">
+                  <div className="absolute inset-0">
+                    <Editor
+                      height="100%"
+                      language={getLanguage(activeFile)}
+                      theme="vs-dark"
+                      value={getCurrentCode()}
+                      onChange={handleCodeChange}
+                      options={{
+                        minimap: { enabled: false },
+                        fontSize: 14,
+                        wordWrap: "on",
+                        padding: { top: 16 },
+                        scrollbar: {
+                          verticalScrollbarSize: 8,
+                        },
+                      }}
+                    />
+                  </div>
+                </div>
+              </ResizablePanel>
+
+              <ResizableHandle className="bg-purple-900/20 hover:bg-purple-700/20" />
+
+              <ResizablePanel defaultSize={45}>
+                <div className="h-[calc(100vh-3.5rem)] bg-white">
+                  <iframe
+                    title="preview"
+                    srcDoc={combinedCode}
+                    className="w-full h-full"
+                    sandbox="allow-scripts"
+                  />
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </div>
         </div>
       </div>
-
-      <style jsx global>{`
-        @keyframes fade-in-down {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in-down {
-          animation: fade-in-down 0.3s ease-out;
-        }
-      `}</style>
-    </div>
+    </TooltipProvider>
   );
-};
-
-export default EditorClient;
+}

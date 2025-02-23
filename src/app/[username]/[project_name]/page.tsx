@@ -10,5 +10,5 @@ export default async function EditorPage() {
     redirect('/');
   }
 
-  return <EditorClient userName={session.user.name} />;
+  return <EditorClient />;
 }
