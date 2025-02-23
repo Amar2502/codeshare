@@ -1,5 +1,5 @@
 // app/dashboard/WorkspaceDashboardClient.tsx
-'use client'
+"use client";
 
 import React from "react";
 import { Plus, MoreVertical, Trash2, Share, Globe } from "lucide-react";
@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import createNewProject from "../actions/projectactions";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 type Project = {
   project_name: string;
@@ -35,11 +36,13 @@ type Project = {
 interface WorkspaceDashboardClientProps {
   profileimage: string;
   projects: Project[];
+  username: string
 }
 
 const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
   profileimage,
   projects,
+  username,
 }) => {
   return (
     <div className="flex h-screen bg-gray-900">
@@ -65,7 +68,7 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                   <form
                     action={async (formData) => {
                       const response = await createNewProject(formData);
-                      redirect(`${response.redirect_url}`)
+                      redirect(`${response.redirect_url}`);
                     }}
                   >
                     <div className="space-y-4">
@@ -115,43 +118,47 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {projects.map((project, index) => (
-              <div
-                key={index}
-                className="bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 p-6 border border-gray-700 hover:border-purple-400 group cursor-pointer"
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <span className="text-3xl">
-                    <Globe
-                      size={24}
-                      className="text-purple-400 group-hover:text-purple-300 transition-colors"
-                    />
-                  </span>
-                  <div>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger className="text-gray-400 hover:text-gray-200 focus:outline-none">
-                        <MoreVertical size={20} />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="bg-gray-700 border-gray-600">
-                        <DropdownMenuItem className="flex items-center gap-2 text-red-200 hover:text-red-100 hover:bg-red-900 transition-colors cursor-pointer">
-                          <Trash2 size={16} />
-                          Delete Project
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="flex items-center gap-2 text-blue-200 hover:text-blue-100 hover:bg-blue-900 transition-colors cursor-pointer">
-                          <Share size={16} />
-                          Share Project
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+              <Link href={`/${username}/${project.project_name}`}>
+                <div
+                  key={index}
+                  className="bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 p-6 border border-gray-700 hover:border-purple-400 group cursor-pointer"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-3xl">
+                      <Globe
+                        size={24}
+                        className="text-purple-400 group-hover:text-purple-300 transition-colors"
+                      />
+                    </span>
+                    <div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="text-gray-400 hover:text-gray-200 focus:outline-none">
+                          <MoreVertical size={20} />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="bg-gray-700 border-gray-600">
+                          <DropdownMenuItem className="flex items-center gap-2 text-red-200 hover:text-red-100 hover:bg-red-900 transition-colors cursor-pointer">
+                            <Trash2 size={16} />
+                            Delete Project
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="flex items-center gap-2 text-blue-200 hover:text-blue-100 hover:bg-blue-900 transition-colors cursor-pointer">
+                            <Share size={16} />
+                            Share Project
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2 text-white group-hover:text-purple-300 transition-colors">
+                    {project.project_name}
+                  </h3>
+                  <p className="text-sm text-gray-300 mb-4 line-clamp-2">
+                    {project.project_description}
+                  </p>
+                  <div className="text-xs text-gray-400">
+                    Last modified: Date
                   </div>
                 </div>
-                <h3 className="font-semibold text-lg mb-2 text-white group-hover:text-purple-300 transition-colors">
-                  {project.project_name}
-                </h3>
-                <p className="text-sm text-gray-300 mb-4 line-clamp-2">
-                  {project.project_description}
-                </p>
-                <div className="text-xs text-gray-400">Last modified: Date</div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

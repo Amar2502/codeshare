@@ -11,12 +11,14 @@ export default async function WorkspaceDashboardPage() {
   }
 
   const profileimage = session.user.image || "/default-avatar.png";
+  const username = session.user.name || "";
   const projects = (session.user as any).projects || [];
 
   return (
     <WorkspaceDashboardClient 
       profileimage={profileimage}
       projects={projects}
+      username={username}
     />
   );
 }
