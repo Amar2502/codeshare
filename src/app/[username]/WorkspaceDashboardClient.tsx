@@ -36,7 +36,7 @@ type Project = {
 interface WorkspaceDashboardClientProps {
   profileimage: string;
   projects: Project[];
-  username: string
+  username: string;
 }
 
 const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
@@ -118,11 +118,11 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {projects.map((project, index) => (
-              <Link href={`/${username}/${project.project_name}`}>
-                <div
-                  key={index}
-                  className="bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 p-6 border border-gray-700 hover:border-purple-400 group cursor-pointer"
-                >
+              <Link
+                key={project.project_name || index}
+                href={`/${username}/${project.project_name}`}
+              >
+                <div className="bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 p-6 border border-gray-700 hover:border-purple-400 group cursor-pointer">
                   <div className="flex justify-between items-start mb-4">
                     <span className="text-3xl">
                       <Globe

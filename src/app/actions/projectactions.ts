@@ -4,6 +4,16 @@ import { auth } from "@/auth";
 import { dbConnect } from "@/lib/dbConnect";
 import User from "@/models/user";
 
+type Project = {
+  project_name: string;
+  project_description: string;
+  files: {
+    html: string;
+    css: string;
+    javascript: string;
+  },
+}
+
 const createNewProject = async (formData: FormData) => {
   try {
     await dbConnect(); // Ensure database connection
@@ -60,7 +70,7 @@ const getProjectDetails = async (pname: string) => {
       : [];
 
     
-    const project = userProjects.find((p) => p.name === pname);
+    const project = userProjects.find((p: Project) => p.project_name === pname);
 
     if (!project) {
       throw new Error("Project not found");
