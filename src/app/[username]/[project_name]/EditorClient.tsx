@@ -128,6 +128,43 @@ export default function EditorClient({ project_name }: EditorClientProps) {
     );
   }
 
+  const handleSaveChanges = async () => {
+
+    console.log("Saving project:", project_name, fileContents);
+
+    try {
+      if (!project_name) {
+        console.error("Error: Project name is missing");
+        return;
+      }
+  
+      const res = await fetch("/api/saveproject", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          project_name: decodeURIComponent(project_name),
+          html: fileContents.html || "",  // Ensure it's not undefined
+          css: fileContents.css || "",
+          javascript: fileContents.js || fileContents.js || "", // Use correct field name
+        }),
+      });
+  
+      const data = await res.json();
+  
+      if (!res.ok) {
+        console.error("Server Error:", data.error || "Failed to update project");
+        return;
+      }
+  
+      console.log("Project updated successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("Error updating project:", error);
+    }
+  }; 
+
   return (
     <TooltipProvider delayDuration={0}>
       <div className="h-screen flex bg-black">
@@ -233,6 +270,7 @@ export default function EditorClient({ project_name }: EditorClientProps) {
               <Tooltip key={`nav-SaveProject`}>
                 <TooltipTrigger asChild>
                   <Button
+                    onClick={handleSaveChanges}
                     variant="ghost"
                     size="icon"
                     className="h-9 w-9 text-purple-400 hover:text-purple-300"

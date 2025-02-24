@@ -3,6 +3,23 @@ import { dbConnect } from "@/lib/dbConnect";
 import { auth } from "@/auth";
 import User from "@/models/user";
 
+type ProjectUpdateRequest = {
+  project_name: string;
+  html?: string;
+  css?: string;
+  javascript?: string;
+};
+
+type Project = {
+  project_name: string;
+  project_description: string;
+  files: {
+    html: string;
+    css: string;
+    javascript: string;
+  };
+};
+
 export async function GET(req: Request, { params }: { params: { pname: string } }) {
   try {
     await dbConnect(); // Ensure database connection
