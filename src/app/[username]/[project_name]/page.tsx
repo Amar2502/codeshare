@@ -21,8 +21,6 @@ export default async function EditorPage({ params }: PageProps) {
   if (!username || !project_name) {
     return <div>Error: Parameters not found</div>;
   }
-
-  console.log(username, project_name);
   
   // const response = await getProjectDetails(project_name);  
   // const projectDetails = response.project;

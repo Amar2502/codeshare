@@ -165,6 +165,11 @@ export default function EditorClient({ project_name }: EditorClientProps) {
     }
   }; 
 
+  const handleShareCode = async () => {
+    console.log("sharing code");
+    
+  }
+
   return (
     <TooltipProvider delayDuration={0}>
       <div className="h-screen flex bg-black">
@@ -283,6 +288,7 @@ export default function EditorClient({ project_name }: EditorClientProps) {
               <Tooltip key={`nav-ShareProject`}>
                 <TooltipTrigger asChild>
                   <Button
+                  onClick={handleShareCode}
                     variant="ghost"
                     size="icon"
                     className="h-9 w-9 text-purple-400 hover:text-purple-300"

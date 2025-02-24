@@ -2,6 +2,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { Plus, MoreVertical, Trash2, Share, Globe } from "lucide-react";
 import {
   Dialog,
@@ -43,7 +44,40 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
   profileimage,
   projects,
   username,
-}) => { 
+}) => {
+  const router = useRouter();
+
+  const handleDeleteProject = async (project_name: string) => {
+    try {
+      if (!project_name) {
+        console.error("Error: Project name is missing");
+        return;
+      }
+
+      const res = await fetch("/api/deleteproject", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          project_name,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error(
+          "Server Error:",
+          data.error || "Failed to delete project"
+        );
+        return;
+      }
+      router.refresh();
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-900">
@@ -137,11 +171,22 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                           <MoreVertical size={20} />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="bg-gray-700 border-gray-600">
-                          <DropdownMenuItem className="flex items-center gap-2 text-red-200 hover:text-red-100 hover:bg-red-900 transition-colors cursor-pointer">
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteProject(project.project_name);
+                            }}
+                            className="flex items-center gap-2 text-red-200 hover:text-red-100 hover:bg-red-900 transition-colors cursor-pointer"
+                          >
                             <Trash2 size={16} />
                             Delete Project
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="flex items-center gap-2 text-blue-200 hover:text-blue-100 hover:bg-blue-900 transition-colors cursor-pointer">
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                            className="flex items-center gap-2 text-blue-200 hover:text-blue-100 hover:bg-blue-900 transition-colors cursor-pointer"
+                          >
                             <Share size={16} />
                             Share Project
                           </DropdownMenuItem>
