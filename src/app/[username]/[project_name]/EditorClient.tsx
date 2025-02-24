@@ -32,13 +32,9 @@ import {
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
 
-type Project = {
+type EditorClientProps = {
   username: string;
   project_name: string;
-}
-
-type EditorClientProps = {
-  project: Project;
 }
 
 type FileType = "html" | "css" | "js";
@@ -53,7 +49,7 @@ const navItems = [
   { icon: Settings, label: "Settings", group: "right" },
 ] as const;
 
-export default function EditorClient({ project }: EditorClientProps) {
+export default function EditorClient({ username, project_name }: EditorClientProps) {
 
   const [activeFile, setActiveFile] = useState<FileType>("html");
   const [html, setHtml] = useState("dcdc");
