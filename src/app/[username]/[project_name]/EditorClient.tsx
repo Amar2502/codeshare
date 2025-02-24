@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Editor from "@monaco-editor/react";
 import {
   ResizableHandle,
@@ -31,100 +31,102 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
-
-type EditorClientProps = {
-  username: string;
-  project_name: string;
-}
+import LoadingEditor from "./EditorLoading";
 
 type FileType = "html" | "css" | "js";
 
-// Define nav items for better organization and reusability
-const navItems = [
-  { icon: Save, label: "Save Project", group: "left" },
-  { icon: Share, label: "Share Project", group: "left" },
-  { icon: Copy, label: "Copy Code", group: "right" },
-  { icon: Download, label: "Download Files", group: "right" },
-  { icon: PlayCircle, label: "Run Project", group: "right" },
-  { icon: Settings, label: "Settings", group: "right" },
-] as const;
+type Project = {
+  project_name: string;
+  project_description: string;
+  files: {
+    html: string;
+    css: string;
+    javascript: string;
+  };
+};
 
-export default function EditorClient({ username, project_name }: EditorClientProps) {
+type EditorClientProps = {
+  project_name: string;
+};
 
+// Map file types to languages and icons
+const fileTypeConfig = {
+  html: { language: "html", icon: FileText },
+  css: { language: "css", icon: FileJson },
+  js: { language: "javascript", icon: FileCode },
+};
+
+export default function EditorClient({ project_name }: EditorClientProps) {
+  const [userProject, setUserProject] = useState<Project | null>(null);
   const [activeFile, setActiveFile] = useState<FileType>("html");
-  const [html, setHtml] = useState("dcdc");
-  const [css, setCss] = useState("cscsc");
-  const [js, setJs] = useState("userjs");
+  const [fileContents, setFileContents] = useState<Record<FileType, string>>({
+    html: "",
+    css: "",
+    js: "",
+  });
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjectDetails = async () => {
+      try {
+        setIsLoading(true);
+        const res = await fetch(`/api/projects/${project_name}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to fetch project details");
+        }
+
+        setUserProject(data.project);
+        setFileContents({
+          html: data.project.files.html || "",
+          css: data.project.files.css || "",
+          js: data.project.files.javascript || "",
+        });
+      } catch (error) {
+        console.error("Error fetching project:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProjectDetails();
+  }, [project_name]);
 
   const handleCodeChange = (value: string | undefined) => {
-    switch (activeFile) {
-      case "html":
-        setHtml(value || "");
-        break;
-      case "css":
-        setCss(value || "");
-        break;
-      case "js":
-        setJs(value || "");
-        break;
-    }
+    setFileContents((prev) => ({
+      ...prev,
+      [activeFile]: value || "",
+    }));
   };
 
-  const getLanguage = (type: FileType) => {
-    const languages = {
-      html: "html",
-      css: "css",
-      js: "javascript",
-    };
-    return languages[type];
-  };
-
-  const getCurrentCode = () => {
-    const codeMap = {
-      html,
-      css,
-      js,
-    };
-    return codeMap[activeFile];
-  };
+  const combinedCode = useMemo(() => {
+    const { html, css, js } = fileContents;
+    return `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>${css}</style>
+        </head>
+        <body>
+          ${html.replace(/<!DOCTYPE html>|<\/?html>|<\/?body>/g, "")}
+          <script>${js}</script>
+        </body>
+      </html>
+    `;
+  }, [fileContents]);
 
   const getFileIcon = (type: FileType) => {
-    const icons = {
-      html: <FileText className="w-4 h-4" />,
-      css: <FileJson className="w-4 h-4" />,
-      js: <FileCode className="w-4 h-4" />,
-    };
-    return icons[type];
+    const Icon = fileTypeConfig[type].icon;
+    return <Icon className="w-4 h-4" />;
   };
 
-  const combinedCode = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <style>${css}</style>
-      </head>
-      <body>
-        ${html.replace(/<!DOCTYPE html>|<\/?html>|<\/?body>/g, "")}
-        <script>${js}</script>
-      </body>
-    </html>
-  `;
-
-  const renderNavItem = (item: (typeof navItems)[number], index: number) => (
-    <Tooltip key={`nav-${item.label}`}>
-      <TooltipTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 text-purple-400 hover:text-purple-300"
-        >
-          <item.icon className="h-5 w-5" />
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>{item.label}</TooltipContent>
-    </Tooltip>
-  );
+  if (isLoading) {
+    return (
+      <LoadingEditor/>
+    );
+  }
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -138,15 +140,19 @@ export default function EditorClient({ username, project_name }: EditorClientPro
         >
           {/* Sidebar Header */}
           <div className="p-4 border-b border-purple-900/20 flex items-center gap-3">
-            <Code className="h-6 w-6 text-purple-400" />
+            {/* <Code className="h-6 w-6 text-purple-400" /> */}
             <div
               className={cn(
                 "transition-all duration-300 overflow-hidden",
                 !isSidebarOpen ? "opacity-0 w-0" : "opacity-100 w-auto"
               )}
             >
-              <h1 className="font-semibold text-white">WebEditor</h1>
-              <p className="text-xs text-purple-400">Code Editor</p>
+              <h1 className="font-semibold text-white">
+                {userProject?.project_name}
+              </h1>
+              <p className="text-xs text-purple-400 truncate overflow-hidden whitespace-nowrap">
+                {userProject?.project_description}
+              </p>
             </div>
           </div>
 
@@ -224,15 +230,81 @@ export default function EditorClient({ username, project_name }: EditorClientPro
                 orientation="vertical"
                 className="h-6 bg-purple-900/20"
               />
-              {navItems
-                .filter((item) => item.group === "left")
-                .map(renderNavItem)}
+              <Tooltip key={`nav-SaveProject`}>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
+                  >
+                    <Save className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Save Project</TooltipContent>
+              </Tooltip>
+              <Tooltip key={`nav-ShareProject`}>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
+                  >
+                    <Share className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Share Project</TooltipContent>
+              </Tooltip>
             </div>
 
             <div className="flex items-center gap-2">
-              {navItems
-                .filter((item) => item.group === "right")
-                .map(renderNavItem)}
+            <Tooltip key={`nav-CopyCode`}>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
+                  >
+                    <Copy className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Copy Code</TooltipContent>
+              </Tooltip>
+            <Tooltip key={`nav-DownloadFiles`}>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
+                  >
+                    <Download className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Download Files</TooltipContent>
+              </Tooltip>
+            <Tooltip key={`nav-RunProject`}>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
+                  >
+                    <PlayCircle className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Run Project</TooltipContent>
+              </Tooltip>
+            <Tooltip key={`nav-Settings`}>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
+                  >
+                    <Settings className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Settings</TooltipContent>
+              </Tooltip>
               <Separator
                 orientation="vertical"
                 className="h-6 bg-purple-900/20"
@@ -248,9 +320,9 @@ export default function EditorClient({ username, project_name }: EditorClientPro
                   <div className="absolute inset-0">
                     <Editor
                       height="100%"
-                      language={getLanguage(activeFile)}
+                      language={fileTypeConfig[activeFile].language}
                       theme="vs-dark"
-                      value={getCurrentCode()}
+                      value={fileContents[activeFile]}
                       onChange={handleCodeChange}
                       options={{
                         minimap: { enabled: false },

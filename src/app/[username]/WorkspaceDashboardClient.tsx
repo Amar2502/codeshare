@@ -152,7 +152,7 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                   <h3 className="font-semibold text-lg mb-2 text-white group-hover:text-purple-300 transition-colors">
                     {project.project_name}
                   </h3>
-                  <p className="text-sm text-gray-300 mb-4 line-clamp-2">
+                  <p className="text-sm text-gray-300 mb-4 line-clamp-2 truncate overflow-hidden whitespace-nowrap">
                     {project.project_description}
                   </p>
                   <div className="text-xs text-gray-400">
