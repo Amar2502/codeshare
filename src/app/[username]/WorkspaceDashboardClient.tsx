@@ -43,7 +43,8 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
   profileimage,
   projects,
   username,
-}) => {
+}) => { 
+
   return (
     <div className="flex h-screen bg-gray-900">
       <div className="flex-1 overflow-auto">
@@ -108,7 +109,7 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                   alt="Profile Image"
                   width={40}
                   height={40}
-                  unoptimized={true}
+                  // unoptimized={true}
                 />
               </div>
             </div>

@@ -33,14 +33,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 type Project = {
-  _id: string;
+  username: string;
   project_name: string;
-  project_description: string;
-  files: {
-    html: string;
-    css: string;
-    javascript: string;
-  };
 }
 
 type EditorClientProps = {
@@ -61,15 +55,10 @@ const navItems = [
 
 export default function EditorClient({ project }: EditorClientProps) {
 
-  const { files } = project;
-  const userhtml = files.html;
-  const usercss = files.css;
-  const userjs = files.javascript;
-
   const [activeFile, setActiveFile] = useState<FileType>("html");
-  const [html, setHtml] = useState(userhtml);
-  const [css, setCss] = useState(usercss);
-  const [js, setJs] = useState(userjs);
+  const [html, setHtml] = useState("dcdc");
+  const [css, setCss] = useState("cscsc");
+  const [js, setJs] = useState("userjs");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const handleCodeChange = (value: string | undefined) => {
@@ -148,7 +137,7 @@ export default function EditorClient({ project }: EditorClientProps) {
         <div
           className={cn(
             "bg-zinc-950 border-r border-purple-900/20 transition-all duration-300 flex flex-col",
-            isSidebarOpen ? "w-64" : "w-14"
+            isSidebarOpen ? "w-44" : "w-14"
           )}
         >
           {/* Sidebar Header */}

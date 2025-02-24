@@ -4,9 +4,11 @@ import { getProjectDetails } from "@/app/actions/projectactions";
 import EditorClient from "./EditorClient";
 
 type PageProps = {
-  username: string,
-  projectname: string
-}
+  params: {
+    username: string;
+    project_name: string;
+  };
+};
 
 export default async function EditorPage({ params }: PageProps) {
   if (!params) {
@@ -16,15 +18,21 @@ export default async function EditorPage({ params }: PageProps) {
   // Ensure params are awaited before use
   const { username, project_name } = await params; 
 
-  const response = await getProjectDetails(project_name);  
-  const projectDetails = response.project;
-  console.log(projectDetails)
-
-  if (!projectDetails) {
-    return <div>Project not found</div>;
+  if (!username || !project_name) {
+    return <div>Error: Parameters not found</div>;
   }
 
+  console.log(username, project_name);
+  
+  // const response = await getProjectDetails(project_name);  
+  // const projectDetails = response.project;
+  // console.log(projectDetails)
+
+  // if (!projectDetails) {
+  //   return <div>Project not found</div>;
+  // }
+
   // return <EditorClient />
-  // return <EditorClient project={projectDetails}/>
-  return <h1>Hello World</h1>;
+  return <EditorClient name={username} project={project_name}/>
+  // return <h1>Hello World</h1>;
 }
