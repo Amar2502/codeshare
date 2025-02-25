@@ -1,6 +1,9 @@
 "use server"
 
+import { auth } from "@/auth";
 import EditorClient from "./EditorClient";
+import { redirect } from "next/navigation";
+import NotLoggedInError from "../NotLogged";
 
 type PageProps = {
   params: {
@@ -10,12 +13,27 @@ type PageProps = {
 };
 
 export default async function EditorPage({ params }: PageProps) {
-  if (!params) {
+
+  const param = await params;
+
+  if (!param) {
     return <div>Error: Parameters not found</div>;
   }
 
+  const session = await auth();
+  
+    if (!session?.user) {
+      redirect('/');
+    }
+
   // Ensure params are awaited before use
-  const { username, project_name } = await params; 
+  const { username, project_name } = param; 
+
+  const loggedInUsername = session.user.name;
+  
+    if (username !== loggedInUsername) {
+      return <NotLoggedInError />;
+    }
 
   if (!username || !project_name) {
     return <div>Error: Parameters not found</div>;
