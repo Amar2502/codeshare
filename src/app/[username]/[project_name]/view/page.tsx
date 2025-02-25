@@ -1,6 +1,6 @@
 "use server"
 
-import ShareClient from "./ShareClient";
+import ViewClient from "./ViewClient";
 
 type PageProps = {
     params: {
@@ -23,5 +23,5 @@ export default async function EditorPage({ params }: PageProps) {
 
   const pname = decodeURIComponent(project_name)
 
-  return <ShareClient  project_name={pname}/>
+  return <ViewClient  project_name={pname}/>
 }

@@ -21,6 +21,7 @@ import {
   Download,
   Copy,
   PlayCircle,
+  StepBack,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -33,6 +34,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import LoadingEditor from "./EditorLoading";
 import JSZip from "jszip";
+import { useRouter } from "next/navigation";
 
 type FileType = "html" | "css" | "js";
 
@@ -47,6 +49,7 @@ type Project = {
 };
 
 type EditorClientProps = {
+  user_name: string;
   project_name: string;
 };
 
@@ -57,7 +60,7 @@ const fileTypeConfig = {
   js: { language: "javascript", icon: FileCode },
 };
 
-const EditorClient = ({ project_name }: EditorClientProps) => {
+const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
   const [userProject, setUserProject] = useState<Project | null>(null);
   const [activeFile, setActiveFile] = useState<FileType>("html");
   const [fileContents, setFileContents] = useState<Record<FileType, string>>({
@@ -67,6 +70,8 @@ const EditorClient = ({ project_name }: EditorClientProps) => {
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProjectDetails = async () => {
@@ -187,8 +192,7 @@ const EditorClient = ({ project_name }: EditorClientProps) => {
     document.body.removeChild(link);
 
     URL.revokeObjectURL(link.href);
-};
-
+  };
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -334,9 +338,12 @@ const EditorClient = ({ project_name }: EditorClientProps) => {
                 </TooltipTrigger>
                 <TooltipContent>Download Files</TooltipContent>
               </Tooltip>
-              <Tooltip key={`nav-RunProject`}>
+              <Tooltip key="nav-RunProject">
                 <TooltipTrigger asChild>
                   <Button
+                    onClick={() => {
+                      window.open(`${window.location.pathname}/view`, "_blank");
+                    }}
                     variant="ghost"
                     size="icon"
                     className="h-9 w-9 text-purple-400 hover:text-purple-300"
@@ -344,7 +351,23 @@ const EditorClient = ({ project_name }: EditorClientProps) => {
                     <PlayCircle className="h-5 w-5" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Run Project</TooltipContent>
+                <TooltipContent>View in New Tab</TooltipContent>
+              </Tooltip>
+
+              <Tooltip key={`nav-Dashboard`}>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => {
+                      router.push(`/${user_name}`);
+                    }}
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
+                  >
+                    <StepBack className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Dashboard</TooltipContent>
               </Tooltip>
               <Tooltip key={`nav-Settings`}>
                 <TooltipTrigger asChild>
@@ -409,6 +432,6 @@ const EditorClient = ({ project_name }: EditorClientProps) => {
       </div>
     </TooltipProvider>
   );
-}
+};
 
 export default EditorClient;

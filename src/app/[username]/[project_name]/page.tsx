@@ -48,6 +48,6 @@ export default async function EditorPage({ params }: PageProps) {
   // }
 
   // return <EditorClient />
-  return <EditorClient  project_name={project_name}/>
+  return <EditorClient user_name={username} project_name={project_name}/>
   // return <h1>Hello World</h1>;
 }

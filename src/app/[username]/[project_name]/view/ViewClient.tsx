@@ -29,7 +29,7 @@ type File = {
   javascript: string;
 };
 
-const ShareClient = ({ project_name }: ShareClientProps) => {
+const ViewClient = ({ project_name }: ShareClientProps) => {
   const [userProject, setUserProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fileContents, setFileContents] = useState<File>({
@@ -102,4 +102,4 @@ const ShareClient = ({ project_name }: ShareClientProps) => {
   
 }
 
-export default ShareClient;
+export default ViewClient;
