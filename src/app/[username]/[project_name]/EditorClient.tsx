@@ -123,21 +123,16 @@ export default function EditorClient({ project_name }: EditorClientProps) {
   };
 
   if (isLoading) {
-    return (
-      <LoadingEditor/>
-    );
+    return <LoadingEditor />;
   }
 
   const handleSaveChanges = async () => {
-
-    console.log("Saving project:", project_name, fileContents);
-
     try {
       if (!project_name) {
         console.error("Error: Project name is missing");
         return;
       }
-  
+
       const res = await fetch("/api/saveproject", {
         method: "PUT",
         headers: {
@@ -145,30 +140,32 @@ export default function EditorClient({ project_name }: EditorClientProps) {
         },
         body: JSON.stringify({
           project_name: decodeURIComponent(project_name),
-          html: fileContents.html || "",  // Ensure it's not undefined
+          html: fileContents.html || "", // Ensure it's not undefined
           css: fileContents.css || "",
           javascript: fileContents.js || fileContents.js || "", // Use correct field name
         }),
       });
-  
+
       const data = await res.json();
-  
+
       if (!res.ok) {
-        console.error("Server Error:", data.error || "Failed to update project");
+        console.error(
+          "Server Error:",
+          data.error || "Failed to update project"
+        );
         return;
       }
-  
+
       console.log("Project updated successfully:", data);
       return data;
     } catch (error) {
       console.error("Error updating project:", error);
     }
-  }; 
+  };
 
   const handleShareCode = async () => {
     console.log("sharing code");
-    
-  }
+  };
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -288,7 +285,7 @@ export default function EditorClient({ project_name }: EditorClientProps) {
               <Tooltip key={`nav-ShareProject`}>
                 <TooltipTrigger asChild>
                   <Button
-                  onClick={handleShareCode}
+                    onClick={handleShareCode}
                     variant="ghost"
                     size="icon"
                     className="h-9 w-9 text-purple-400 hover:text-purple-300"
@@ -301,7 +298,7 @@ export default function EditorClient({ project_name }: EditorClientProps) {
             </div>
 
             <div className="flex items-center gap-2">
-            <Tooltip key={`nav-CopyCode`}>
+              <Tooltip key={`nav-CopyCode`}>
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
@@ -313,7 +310,7 @@ export default function EditorClient({ project_name }: EditorClientProps) {
                 </TooltipTrigger>
                 <TooltipContent>Copy Code</TooltipContent>
               </Tooltip>
-            <Tooltip key={`nav-DownloadFiles`}>
+              <Tooltip key={`nav-DownloadFiles`}>
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
@@ -325,7 +322,7 @@ export default function EditorClient({ project_name }: EditorClientProps) {
                 </TooltipTrigger>
                 <TooltipContent>Download Files</TooltipContent>
               </Tooltip>
-            <Tooltip key={`nav-RunProject`}>
+              <Tooltip key={`nav-RunProject`}>
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
@@ -337,7 +334,7 @@ export default function EditorClient({ project_name }: EditorClientProps) {
                 </TooltipTrigger>
                 <TooltipContent>Run Project</TooltipContent>
               </Tooltip>
-            <Tooltip key={`nav-Settings`}>
+              <Tooltip key={`nav-Settings`}>
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"

@@ -1,6 +1,5 @@
 "use server"
 
-import { getProjectDetails } from "@/app/actions/projectactions";
 import EditorClient from "./EditorClient";
 
 type PageProps = {

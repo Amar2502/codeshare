@@ -27,10 +27,7 @@ export async function PUT(req: Request) {
     }
 
     const { project_name, html, css, javascript }: ProjectUpdateRequest = await req.json();
-
-    console.log(project_name, html, css, javascript);
     
-
     if (!project_name) {
       return NextResponse.json({ error: "Project name is required" }, { status: 400 });
     }
