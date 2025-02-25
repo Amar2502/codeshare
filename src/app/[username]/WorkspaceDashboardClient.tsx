@@ -84,7 +84,7 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
       <div className="flex-1 overflow-auto">
         <div className="bg-gray-800 px-6 py-3 shadow-lg border-b border-gray-700">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-100">Welcome</h2>
+            <h2 className="text-2xl font-bold text-gray-100">Welcome {username}</h2>
             <div className="flex items-center gap-4">
               <Dialog>
                 <DialogTrigger className="bg-purple-500 text-gray-100 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-purple-700 transition-colors shadow-md cursor-pointer">

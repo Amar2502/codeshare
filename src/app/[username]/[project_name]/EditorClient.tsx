@@ -170,16 +170,17 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
   };
 
   const handleShareCode = async () => {
-    console.log("sharing code");
+    const currentUrl = window.location.href;
+    const copyURL = currentUrl + "/" + "website";
+    navigator.clipboard.writeText(copyURL);
   };
 
   const handleDownloadFile = async () => {
-    console.log("file is being downloaded");
     const zip = new JSZip();
 
     zip.file("index.html", fileContents.html);
-    zip.file("index.css", fileContents.css);
-    zip.file("index.js", fileContents.js);
+    zip.file("styles.css", fileContents.css);
+    zip.file("script.js", fileContents.js);
 
     const blob = await zip.generateAsync({ type: "blob" });
 
@@ -256,12 +257,26 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
                               : "opacity-100 w-auto"
                           )}
                         >
-                          {`index.${type}`}
+                          {type === "html"
+                            ? "index.html"
+                            : type === "css"
+                            ? "styles.css"
+                            : type === "js"
+                            ? "scripts.js"
+                            : "unknown"}
                         </span>
                       </Button>
                     </TooltipTrigger>
                     {!isSidebarOpen && (
-                      <TooltipContent>{`index.${type}`}</TooltipContent>
+                      <TooltipContent>
+                        {type === "html"
+                          ? "index.html"
+                          : type === "css"
+                          ? "styles.css"
+                          : type === "js"
+                          ? "scripts.js"
+                          : "unknown"}
+                      </TooltipContent>
                     )}
                   </Tooltip>
                 ))}
