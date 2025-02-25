@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
 import LoadingEditor from "./EditorLoading";
+import JSZip from "jszip";
 
 type FileType = "html" | "css" | "js";
 
@@ -167,6 +168,28 @@ export default function EditorClient({ project_name }: EditorClientProps) {
     console.log("sharing code");
   };
 
+  const handleDownloadFile = async () => {
+    console.log("file is being downloaded");
+    const zip = new JSZip();
+
+    zip.file("index.html", fileContents.html);
+    zip.file("index.css", fileContents.css);
+    zip.file("index.js", fileContents.js);
+
+    const blob = await zip.generateAsync({ type: "blob" });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "project.zip";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(link.href);
+};
+
+
   return (
     <TooltipProvider delayDuration={0}>
       <div className="h-screen flex bg-black">
@@ -298,21 +321,10 @@ export default function EditorClient({ project_name }: EditorClientProps) {
             </div>
 
             <div className="flex items-center gap-2">
-              <Tooltip key={`nav-CopyCode`}>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
-                  >
-                    <Copy className="h-5 w-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Copy Code</TooltipContent>
-              </Tooltip>
               <Tooltip key={`nav-DownloadFiles`}>
                 <TooltipTrigger asChild>
                   <Button
+                    onClick={handleDownloadFile}
                     variant="ghost"
                     size="icon"
                     className="h-9 w-9 text-purple-400 hover:text-purple-300"
