@@ -3,7 +3,7 @@
 import { auth } from "@/auth";
 import EditorClient from "./EditorClient";
 import { redirect } from "next/navigation";
-import NotLoggedInError from "../NotLogged";
+import { NotLoggedInError } from "../NotLogged";
 
 type PageProps = {
   params: {
@@ -32,7 +32,7 @@ export default async function EditorPage({ params }: PageProps) {
   const loggedInUsername = session.user.name;
   
     if (username !== loggedInUsername) {
-      return <NotLoggedInError />;
+      return <NotLoggedInError/>;
     }
 
   if (!username || !project_name) {

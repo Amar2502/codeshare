@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import WorkspaceDashboardClient from "./WorkspaceDashboardClient";
-import NotLoggedInError from "./NotLogged";
+import { NotLoggedInError } from "./NotLogged";
 
 type PageProps = {
   params: {

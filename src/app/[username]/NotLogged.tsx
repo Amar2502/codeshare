@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
-const NotLoggedInError = () => {
+export const NotLoggedInError = () => {
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -17,7 +17,6 @@ const NotLoggedInError = () => {
       >
         <AlertTriangle size={48} className="text-white mb-4" />
         <h2 className="text-2xl font-bold">Access Denied</h2>
-        <p className="text-gray-200 mt-2">You must be logged in to view this page.</p>
         <Link
           href="/login"
           className="mt-4 px-4 py-2 bg-white text-red-500 font-semibold rounded-md shadow hover:bg-gray-100 transition"
@@ -29,5 +28,4 @@ const NotLoggedInError = () => {
   );
 }
 
-
-export default NotLoggedInError;
+// export default NotLoggedInError;
