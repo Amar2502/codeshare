@@ -9,6 +9,9 @@ type PageProps = {
   };
 };
 
+console.log(typeof NotLoggedInError);
+
+
 export default async function WorkspaceDashboardPage({ params }: PageProps) {
 
   const param = await params

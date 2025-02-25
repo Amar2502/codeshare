@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
-export default function NotLoggedInError() {
+const NotLoggedInError = () => {
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -28,3 +28,6 @@ export default function NotLoggedInError() {
     </motion.div>
   );
 }
+
+
+export default NotLoggedInError;

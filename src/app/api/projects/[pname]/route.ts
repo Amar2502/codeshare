@@ -22,6 +22,9 @@ type Project = {
 
 export async function GET(req: Request, { params }: { params: { pname: string } }) {
   try {
+
+    const param = await params;
+
     await dbConnect(); // Ensure database connection
 
     const session = await auth();
@@ -37,7 +40,7 @@ export async function GET(req: Request, { params }: { params: { pname: string } 
     }
 
     const userProjects = Array.isArray(user.projects) ? user.projects : [];
-    const project = userProjects.find((p: any) => p.project_name === params.pname);
+    const project = userProjects.find((p: any) => p.project_name === param.pname);
 
     if (!project) {
       return NextResponse.json({ success: false, error: "Project not found" }, { status: 404 });

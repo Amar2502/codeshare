@@ -57,7 +57,7 @@ const fileTypeConfig = {
   js: { language: "javascript", icon: FileCode },
 };
 
-export default function EditorClient({ project_name }: EditorClientProps) {
+const EditorClient = ({ project_name }: EditorClientProps) => {
   const [userProject, setUserProject] = useState<Project | null>(null);
   const [activeFile, setActiveFile] = useState<FileType>("html");
   const [fileContents, setFileContents] = useState<Record<FileType, string>>({
@@ -410,3 +410,5 @@ export default function EditorClient({ project_name }: EditorClientProps) {
     </TooltipProvider>
   );
 }
+
+export default EditorClient;
