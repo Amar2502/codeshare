@@ -26,13 +26,13 @@ export default function HomePage() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white">
+      <div className="min-h-screen bg-backgroundcolor text-text">
         {/* Navbar */}
         <nav className="container mx-auto px-4 py-6 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Code className="h-8 w-8 text-blue-400" />
             <span className="text-2xl font-bold">
-              Code<span className="text-blue-400">Share</span>
+              Code<span className="text-accentcolor">Share</span>
             </span>
           </div>
         </nav>
@@ -48,11 +48,11 @@ export default function HomePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                Code, Preview, <span className="text-blue-400">Share.</span>
+                Code, Preview, <span className="text-accentcolor">Share.</span>
               </motion.h1>
 
               <motion.p
-                className="text-xl text-gray-300"
+                className="text-xl text-text"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -69,7 +69,7 @@ export default function HomePage() {
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
                 <motion.button
-                  className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-lg font-medium text-lg flex items-center justify-center space-x-2"
+                  className="bg-accentcolor hover:bg-secondarycolor text-white py-3 px-8 rounded-lg font-medium text-lg flex items-center justify-center space-x-2"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onHoverStart={() => setHoverButton(true)}
@@ -84,7 +84,7 @@ export default function HomePage() {
                   {/* Button to Open Modal */}
                   <button
                     onClick={() => setIsOpen(true)}
-                    className="border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white py-3 px-8 rounded-lg font-medium text-lg flex items-center justify-center space-x-2"
+                    className="border border-purple-100 hover:border-accentcolor text-gray-300 hover:text-white py-3 px-8 rounded-lg font-medium text-lg flex items-center justify-center space-x-2"
                   >
                     <Monitor className="h-5 w-5" />
                     <span>Try Now</span>
@@ -92,7 +92,7 @@ export default function HomePage() {
 
                   {/* Modal */}
                   {isOpen && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="fixed inset-0 bg-primarycolor bg-opacity-90 flex items-center justify-center z-50">
                       <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -187,7 +187,7 @@ export default function HomePage() {
         </main>
 
         {/* Example Projects Section */}
-        <section className="bg-gray-900 py-16">
+        <section className="bg-secondarycolor py-16">
           <div className="container mx-auto px-4">
             <motion.h2
               className="text-3xl md:text-4xl font-bold text-center mb-8"
@@ -195,7 +195,7 @@ export default function HomePage() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
             >
-              Explore <span className="text-blue-400">Projects</span>
+              Explore <span className="text-accentcolor">Projects</span>
             </motion.h2>
 
             <motion.p
@@ -232,7 +232,7 @@ export default function HomePage() {
               ].map((project, index) => (
                 <motion.div
                   key={index}
-                  className="bg-gray-800 rounded-lg overflow-hidden shadow-lg"
+                  className="bg-primarycolor rounded-lg overflow-hidden shadow-lg"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -266,7 +266,7 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section className="bg-gray-950 py-24">
+        <section className="bg-backgroundcolor py-24">
           <div className="container mx-auto px-4">
             <motion.h2
               className="text-3xl md:text-4xl font-bold text-center mb-16"
@@ -320,7 +320,7 @@ export default function HomePage() {
         {/* CTA Section */}
         <section className="container mx-auto px-4 py-20">
           <motion.div
-            className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl p-10 text-center"
+            className="bg-secondarycolor rounded-2xl p-10 text-center"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
