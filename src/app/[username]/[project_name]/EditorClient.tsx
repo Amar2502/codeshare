@@ -32,6 +32,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner"
 import LoadingEditor from "./EditorLoading";
 import JSZip from "jszip";
 import { useRouter } from "next/navigation";
@@ -163,6 +164,7 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
       }
 
       console.log("Project updated successfully:", data);
+      toast("Changes Saved Successfully")
       return data;
     } catch (error) {
       console.error("Error updating project:", error);
@@ -193,6 +195,8 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
     document.body.removeChild(link);
 
     URL.revokeObjectURL(link.href);
+
+    toast("File is being downloaded")
   };
 
   return (
