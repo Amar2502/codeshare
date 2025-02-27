@@ -274,25 +274,25 @@ export default function HomePage() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
             >
-              Why Choose <span className="text-blue-400">CodeShare</span>?
+              Why Choose <span className="text-accentcolor">CodeShare</span>?
             </motion.h2>
 
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 {
-                  icon: <Code className="h-8 w-8 text-blue-400" />,
+                  icon: <Code className="h-8 w-8 text-accentcolor" />,
                   title: "Live Preview",
                   description:
                     "See your changes in real-time as you code with our instant preview feature.",
                 },
                 {
-                  icon: <Share2 className="h-8 w-8 text-blue-400" />,
+                  icon: <Share2 className="h-8 w-8 text-accentcolor" />,
                   title: "Instant Sharing",
                   description:
                     "Share your projects with a simple link. No hosting or deployment needed.",
                 },
                 {
-                  icon: <Database className="h-8 w-8 text-blue-400" />,
+                  icon: <Database className="h-8 w-8 text-accentcolor" />,
                   title: "No Git Required",
                   description:
                     "Skip the version control complexities. We handle everything for you.",
@@ -300,7 +300,7 @@ export default function HomePage() {
               ].map((feature, index) => (
                 <motion.div
                   key={index}
-                  className="bg-gray-800 p-6 rounded-xl"
+                  className="bg-secondarycolor p-6 rounded-xl"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -310,7 +310,7 @@ export default function HomePage() {
                     {feature.icon}
                   </div>
                   <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                  <p className="text-gray-300">{feature.description}</p>
+                  <p className="text-text">{feature.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -334,7 +334,7 @@ export default function HomePage() {
             </p>
 
             <motion.button
-              className="bg-white text-blue-700 py-3 px-10 rounded-lg font-medium text-lg inline-flex items-center space-x-2"
+              className="bg-white text-primarycolor py-3 px-10 rounded-lg font-medium text-lg inline-flex items-center space-x-2"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleSignIn}
@@ -346,7 +346,7 @@ export default function HomePage() {
         </section>
 
         {/* Footer */}
-        <footer className="bg-gray-950 py-8">
+        <footer className="bg-gray-950 py-3">
           <div className="container mx-auto px-4 text-center text-gray-400">
             <p>© {new Date().getFullYear()} CodeShare. All rights reserved.</p>
           </div>
