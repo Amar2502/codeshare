@@ -193,6 +193,9 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
     const currentUrl = window.location.href;
     const copyURL = currentUrl + "/" + "website";
     navigator.clipboard.writeText(copyURL);
+    toast(`Share link copied successfully ${copyURL} `, {
+      style: { backgroundColor: "#29b3f2", color: "#1A1325" },
+    });
   };
 
   const handleDownloadFile = async () => {

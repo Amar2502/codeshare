@@ -3,7 +3,17 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { Plus, MoreVertical, Trash2, Share, Globe, Code, User, Settings, LogOut } from "lucide-react";
+import {
+  Plus,
+  MoreVertical,
+  Trash2,
+  Share,
+  Globe,
+  Code,
+  User,
+  Settings,
+  LogOut,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -82,9 +92,9 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
 
   const handleSignOut = async () => {
     await signOut();
-  } 
+  };
 
-  return (
+  return projects.length > 0 ? (
     <div className="flex h-screen bg-[#0D0F21]">
       <div className="flex-1 overflow-auto">
         <div className="bg-[#16182D] px-6 py-3 shadow-lg border-b border-[#232741]">
@@ -158,12 +168,18 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                     />
                   </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-36 cursor-pointer">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-36 cursor-pointer"
+                >
                   {/* <DropdownMenuItem>
-                    <User className="mr-2 h-4 w-4" />
-                    Change Profile Details
-                  </DropdownMenuItem> */}
-                  <DropdownMenuItem onClick={handleSignOut} className="text-red-500">
+                  <User className="mr-2 h-4 w-4" />
+                  Change Profile Details
+                </DropdownMenuItem> */}
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="text-red-500"
+                  >
                     <LogOut className="mr-1 h-4 w-4" />
                     Logout
                   </DropdownMenuItem>
@@ -231,6 +247,66 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
             ))}
           </div>
         </div>
+      </div>
+    </div>
+  ) : (
+    <div className="bg-backgroundcolor flex items-center justify-center h-screen text-center text-gray-300 px-4">
+      <div className="bg-gray-900 p-10 rounded-2xl shadow-xl w-full max-w-md flex flex-col justify-center items-center">
+        <h2 className="text-4xl font-extrabold text-white">
+          No Projects Found
+        </h2>
+        <p className="text-gray-400 mt-4 text-lg">
+          Kickstart your journey by creating your first project!
+        </p>
+        <Dialog>
+          <DialogTrigger className="mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-5 py-3 rounded-xl flex items-center gap-3 hover:opacity-90 transition-all duration-300 shadow-lg cursor-pointer">
+            <Plus size={22} />
+            <span className="text-lg font-medium">New Project</span>
+          </DialogTrigger>
+          <DialogContent className="bg-[#16182D] border border-[#232741] text-white rounded-lg shadow-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-white text-2xl font-bold">
+                Create a New Project
+              </DialogTitle>
+              <DialogDescription className="text-gray-400">
+                Please provide the project name and description.
+              </DialogDescription>
+            </DialogHeader>
+            <form
+              action={async (formData) => {
+                const response = await createNewProject(formData);
+                redirect(`${response.redirect_url}`);
+              }}
+              className="space-y-6"
+            >
+              <div>
+                <label className="block text-sm font-medium text-gray-300">
+                  Project Name
+                </label>
+                <Input
+                  placeholder="Enter project name"
+                  className="mt-2 bg-[#232741] border border-[#2C314E] text-white rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-purple-600"
+                  name="pname"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300">
+                  Project Description
+                </label>
+                <textarea
+                  placeholder="Enter project description"
+                  className="mt-2 p-3 rounded-lg w-full min-h-[80px] bg-[#232741] border border-[#2C314E] text-white outline-none focus:ring-2 focus:ring-purple-600"
+                  name="pdesc"
+                />
+              </div>
+              <div className="mt-4 flex justify-end">
+                <button className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-all duration-300">
+                  Create Project
+                </button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
