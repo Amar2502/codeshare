@@ -15,6 +15,9 @@ import {
   Shield,
   Star,
   MessageSquare,
+  Palette,
+  Folder,
+  Layout,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -30,7 +33,7 @@ import {
 export default function HomePage() {
   const [hoverButton, setHoverButton] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [hoveredProject, setHoveredProject] = useState(null);
+  const [hoveredProject, setHoveredProject] = useState<number>();
 
   const handleSignIn = async () => {
     await signIn("google", { callbackUrl: "/" });
@@ -38,29 +41,29 @@ export default function HomePage() {
 
   const faqs = [
     {
-      question: "What is CodeShare?",
+      question: "What is CodeVault?",
       answer:
-        "CodeShare is a platform that allows developers to build, preview, and share web projects without the need for hosting or deployment knowledge. It's perfect for beginners, educators, and professionals who want to quickly showcase their HTML, CSS, and JavaScript projects.",
+        "CodeVault is a platform that allows developers to build, preview, and share web projects without the need for hosting or deployment knowledge. It's perfect for beginners, educators, and professionals who want to quickly showcase their HTML, CSS, and JavaScript projects.",
     },
     {
-      question: "Do I need to know Git to use CodeShare?",
+      question: "Do I need to know Git to use CodeVault?",
       answer:
-        "Not at all! One of the main benefits of CodeShare is that you don't need any knowledge of Git or version control. We handle all the technical aspects of saving and sharing your code, so you can focus on creating.",
+        "Not at all! One of the main benefits of CodeVault is that you don't need any knowledge of Git or version control. We handle all the technical aspects of saving and sharing your code, so you can focus on creating.",
     },
     {
       question: "How do I share my projects with others?",
       answer:
-        "Once you've created a project, CodeShare automatically generates a unique URL that you can share with anyone. Recipients can view your code and see the live preview without needing an account themselves.",
+        "Once you've created a project, CodeVault automatically generates a unique URL that you can share with anyone. Recipients can view your code and see the live preview without needing an account themselves.",
     },
     {
-      question: "Is CodeShare free to use?",
+      question: "Is CodeVault free to use?",
       answer:
-        "Yes! CodeShare is completely free to use.",
+        "Yes! CodeVault is completely free to use.",
     },
     {
-      question: "What programming languages does CodeShare support?",
+      question: "What programming languages does CodeVault support?",
       answer:
-        "Currently, CodeShare supports HTML, CSS, and JavaScript. We're planning to add support for more languages and frameworks in the future based on user feedback.",
+        "Currently, CodeVault supports HTML, CSS, and JavaScript. We're planning to add support for more languages and frameworks in the future based on user feedback.",
     },
   ];
 
@@ -124,18 +127,18 @@ export default function HomePage() {
 
   return (
     <>
-      <div className="min-h-screen bg-[#0F172A] text-[#F8FAFC]">
+      <div className="min-h-screen bg-gradient-to-b from-[#0D0F21] to-[#141631] text-[#F8FAFC]">
         {/* Navbar */}
         <nav className="container mx-auto px-4 pt-6 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Code className="h-8 w-8 text-[#60A5FA]" />
+            <Code className="h-8 w-8 text-[#7C3AED]" />
             <span className="text-2xl font-bold">
-              Code<span className="text-[#8B5CF6]">Share</span>
+              Code<span className="text-[#A78BFA]">Vault</span>
             </span>
           </div>
         </nav>
 
-        {/* Hero Section */}
+        {/* Hero Section - Darkest (Level 1) */}
         <main className="container mx-auto px-4 pt-10 pb-24">
           <div className="flex flex-col lg:flex-row items-center gap-12">
             {/* Left Content */}
@@ -146,7 +149,7 @@ export default function HomePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                Code, Preview, <span className="text-[#8B5CF6]">Share.</span>
+                Code, Preview, <span className="text-[#A78BFA]">Share.</span>
               </motion.h1>
 
               <motion.p
@@ -187,7 +190,7 @@ export default function HomePage() {
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
                 <motion.button
-                  className="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white py-3 px-8 rounded-lg font-medium text-lg flex items-center justify-center space-x-2"
+                  className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white py-3 px-8 rounded-lg font-medium text-lg flex items-center justify-center space-x-2"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onHoverStart={() => setHoverButton(true)}
@@ -202,7 +205,7 @@ export default function HomePage() {
                   {/* Button to Open Modal */}
                   <button
                     onClick={() => setIsOpen(true)}
-                    className="border border-[#4B5563] hover:border-[#8B5CF6] text-[#E2E8F0] hover:text-white py-3 px-8 rounded-lg font-medium text-lg flex items-center justify-center space-x-2"
+                    className="border border-[#A78BFA] hover:border-[#C4B5FD] text-[#E2E8F0] hover:text-white py-3 px-8 rounded-lg font-medium text-lg flex items-center justify-center space-x-2"
                   >
                     <Monitor className="h-5 w-5" />
                     <span>Try Now</span>
@@ -210,12 +213,12 @@ export default function HomePage() {
 
                   {/* Modal */}
                   {isOpen && (
-                    <div className="fixed inset-0 bg-[#0F172A] bg-opacity-90 flex items-center justify-center z-50 backdrop-blur-sm">
+                    <div className="fixed inset-0 bg-[#0D0F21] bg-opacity-90 flex items-center justify-center z-50 backdrop-blur-sm">
                       <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
-                        className="bg-[#1E293B] text-white p-2 rounded-lg shadow-lg w-[90vw] max-w-5xl h-50vh flex flex-col relative"
+                        className="bg-[#141631] text-white p-2 rounded-lg shadow-lg w-[90vw] max-w-5xl h-50vh flex flex-col relative"
                       >
                         <button
                           onClick={() => setIsOpen(false)}
@@ -241,8 +244,8 @@ export default function HomePage() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <div className="bg-[#1E293B] rounded-xl overflow-hidden shadow-2xl border border-[#334155]">
-                <div className="bg-[#0F172A] p-3 flex items-center space-x-2">
+              <div className="bg-[#141631] rounded-xl overflow-hidden shadow-2xl border border-[#1F2143]">
+                <div className="bg-[#0D0F21] p-3 flex items-center space-x-2">
                   <div className="flex space-x-1.5">
                     <div className="w-3 h-3 rounded-full bg-red-500"></div>
                     <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
@@ -254,7 +257,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="grid grid-cols-2 h-80">
-                  <div className="bg-[#0F172A] p-4 font-mono text-sm text-[#60A5FA] overflow-hidden border-r border-[#334155]">
+                  <div className="bg-[#0D0F21] p-4 font-mono text-sm text-[#A78BFA] overflow-hidden border-r border-[#1F2143]">
                     <pre>
                       {`<!DOCTYPE html>
 <html>
@@ -304,8 +307,8 @@ export default function HomePage() {
           </div>
         </main>
 
-        {/* Example Projects Section */}
-        <section id="projects" className="bg-[#1E293B] py-20">
+        {/* Example Projects Section - Medium Dark (Level 2) */}
+        <section id="projects" className="bg-[#181C41] py-20">
           <div className="container mx-auto px-4">
             <motion.h2
               className="text-3xl md:text-4xl font-bold text-center mb-8 text-white"
@@ -313,7 +316,7 @@ export default function HomePage() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
             >
-              Explore <span className="text-[#8B5CF6]">Projects</span>
+              Explore <span className="text-[#A78BFA]">Projects</span>
             </motion.h2>
 
             <motion.p
@@ -336,11 +339,11 @@ export default function HomePage() {
               {projects.map((project, index) => (
                 <motion.div
                   key={index}
-                  className="bg-[#0F172A] rounded-xl overflow-hidden shadow-xl border border-[#334155] h-full flex flex-col"
+                  className="bg-[#141631] rounded-xl overflow-hidden shadow-xl border border-[#1F2143] h-full flex flex-col"
                   variants={projectVariants}
                   whileHover="hover"
                   onHoverStart={() => setHoveredProject(index)}
-                  onHoverEnd={() => setHoveredProject(null)}
+                  onHoverEnd={() => setHoveredProject(-1)}
                 >
                   <div className="h-48 overflow-hidden relative">
                     <motion.div
@@ -354,11 +357,11 @@ export default function HomePage() {
                         layout="fill"
                         objectFit="cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] to-transparent opacity-60"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#141631] to-transparent opacity-60"></div>
                     </motion.div>
                     
                     <motion.div 
-                      className="absolute top-3 right-3 bg-[#8B5CF6] text-white p-1 px-2 rounded-full text-xs font-medium"
+                      className="absolute top-3 right-3 bg-[#7C3AED] text-white p-1 px-2 rounded-full text-xs font-medium"
                       initial={{ opacity: 0, y: -10 }}
                       animate={hoveredProject === index ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
                       transition={{ duration: 0.3 }}
@@ -369,14 +372,14 @@ export default function HomePage() {
                   
                   <div className="p-5 flex-1 flex flex-col">
                     <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                    <p className="text-[#94A3B8] mb-4 flex-1">{project.description}</p>
+                    <p className="text-[#A1AFCF] mb-4 flex-1">{project.description}</p>
                     <div className="flex justify-between items-center mt-auto">
-                      <p className="text-[#64748B] text-sm">
+                      <p className="text-[#8896BF] text-sm">
                         By {project.author}
                       </p>
                       <Link href={`${project.sharelink}`} passHref>
                         <motion.div
-                          className="text-[#8B5CF6] hover:text-[#A78BFA] font-medium flex items-center group"
+                          className="text-[#A78BFA] hover:text-[#C4B5FD] font-medium flex items-center group"
                           whileHover={{ x: 5 }}
                         >
                           View Project 
@@ -387,7 +390,7 @@ export default function HomePage() {
                   </div>
                   
                   <motion.div 
-                    className="h-1 bg-gradient-to-r from-[#8B5CF6] to-[#EC4899]"
+                    className="h-1 bg-gradient-to-r from-[#7C3AED] to-[#EC4899]"
                     initial={{ scaleX: 0, originX: 0 }}
                     animate={hoveredProject === index ? { scaleX: 1 } : { scaleX: 0 }}
                     transition={{ duration: 0.4 }}
@@ -398,8 +401,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Features Section */}
-        <section id="features" className="bg-[#0F172A] py-24">
+        {/* Features Section - Lighter (Level 3) */}
+        <section id="features" className="bg-gradient-to-b from-[#0D0F21] to-[#141631] text-[#F8FAFC] py-24">
           <div className="container mx-auto px-4">
             <motion.h2
               className="text-3xl md:text-4xl font-bold text-center mb-6"
@@ -407,7 +410,7 @@ export default function HomePage() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
             >
-              Why Choose <span className="text-[#8B5CF6]">CodeShare</span>?
+              Why Choose <span className="text-[#A78BFA]">CodeVault</span>?
             </motion.h2>
 
             <motion.p
@@ -421,66 +424,68 @@ export default function HomePage() {
             </motion.p>
 
             <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: <Code className="h-8 w-8 text-[#8B5CF6]" />,
-                  title: "Live Preview",
-                  description:
-                    "See your changes in real-time as you code with our instant preview feature.",
-                },
-                {
-                  icon: <Share2 className="h-8 w-8 text-[#8B5CF6]" />,
-                  title: "Instant Sharing",
-                  description:
-                    "Share your projects with a simple link. No hosting or deployment needed.",
-                },
-                {
-                  icon: <Database className="h-8 w-8 text-[#8B5CF6]" />,
-                  title: "No Git Required",
-                  description:
-                    "Skip the version control complexities. We handle everything for you.",
-                },
-                {
-                  icon: <Users className="h-8 w-8 text-[#8B5CF6]" />,
-                  title: "Collaborative Editing",
-                  description:
-                    "Work together in real-time with teammates on the same project.",
-                },
-                {
-                  icon: <BookOpen className="h-8 w-8 text-[#8B5CF6]" />,
-                  title: "Learning Resources",
-                  description:
-                    "Access tutorials and sample projects to improve your coding skills.",
-                },
-                {
-                  icon: <Shield className="h-8 w-8 text-[#8B5CF6]" />,
-                  title: "Secure Storage",
-                  description:
-                    "Your projects are securely stored and backed up regularly.",
-                },
-              ].map((feature, index) => (
-                <motion.div
-                  key={index}
-                  className="bg-[#1E293B] p-6 rounded-xl border border-[#334155] hover:border-[#8B5CF6] transition-all duration-300"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <div className="bg-[#2D3748] inline-block p-4 rounded-lg mb-4">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                  <p className="text-[#CBD5E1]">{feature.description}</p>
-                </motion.div>
-              ))}
-            </div>
+  {[
+    {
+      icon: <Code className="h-8 w-8 text-[#A78BFA]" />,
+      title: "Live Preview",
+      description:
+        "See your changes in real-time as you code with our instant preview feature.",
+    },
+    {
+      icon: <Share2 className="h-8 w-8 text-[#A78BFA]" />,
+      title: "Instant Sharing",
+      description:
+        "Share your projects with a simple link. No hosting or deployment needed.",
+    },
+    {
+      icon: <Database className="h-8 w-8 text-[#A78BFA]" />,
+      title: "No Git Required",
+      description:
+        "Skip the version control complexities. We handle everything for you.",
+    },
+    {
+      icon: <Layout className="h-8 w-8 text-[#A78BFA]" />,
+      title: "Easy-to-Use Interface",
+      description:
+        "A simple and intuitive interface designed for beginner and experienced developers alike.",
+    },
+    {
+      icon: <Folder className="h-8 w-8 text-[#A78BFA]" />,
+      title: "Folder & File Management",
+      description:
+        "Organize your projects efficiently with an intuitive folder and file structure.",
+    },
+    {
+      icon: <Shield className="h-8 w-8 text-[#A78BFA]" />,
+      title: "Secure Storage",
+      description:
+        "Your projects are securely stored and backed up regularly.",
+    },
+  ].map((feature, index) => (
+    <motion.div
+      key={index}
+      className="bg-[#181C41] p-6 rounded-xl border border-[#242856] hover:border-[#A78BFA] transition-all duration-300"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)" }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1 }}
+    >
+      <div className="bg-[#141631] inline-block p-4 rounded-lg mb-4">
+        {feature.icon}
+      </div>
+      <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+      <p className="text-[#CBD5E1]">{feature.description}</p>
+    </motion.div>
+  ))}
+</div>
+
+
           </div>
         </section>
 
-        {/* How It Works Section */}
-        <section className="bg-[#1E293B] py-24">
+        {/* How It Works Section - Even Lighter (Level 4) */}
+        <section className="bg-[#242960] py-24">
           <div className="container mx-auto px-4">
             <motion.h2
               className="text-3xl md:text-4xl font-bold text-center mb-6"
@@ -488,11 +493,11 @@ export default function HomePage() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
             >
-              How <span className="text-[#8B5CF6]">It Works</span>
+              How <span className="text-[#A78BFA]">It Works</span>
             </motion.h2>
 
             <motion.p
-              className="text-xl text-[#CBD5E1] text-center max-w-3xl mx-auto mb-16"
+              className="text-xl text-[#DDE2F1] text-center max-w-3xl mx-auto mb-16"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -530,14 +535,14 @@ export default function HomePage() {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.2 }}
                 >
-                  <div className="text-8xl font-bold text-[#0F172A] absolute -top-10 left-0 opacity-30">
+                  <div className="text-8xl font-bold text-[#0D0F21] absolute -top-14 left-0 opacity-30">
                     {step.step}
                   </div>
-                  <div className="bg-[#0F172A] p-8 rounded-xl relative z-10">
+                  <div className="bg-[#1E2250] p-8 rounded-xl relative z-10">
                     <h3 className="text-2xl font-bold mb-4 text-white">
                       {step.title}
                     </h3>
-                    <p className="text-[#CBD5E1]">{step.description}</p>
+                    <p className="text-[#DDE2F1]">{step.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -545,8 +550,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* FAQ Section with shadcn Accordion */}
-        <section id="faq" className="bg-[#0F172A] py-24">
+        {/* FAQ Section - Lightest (Level 5) */}
+        <section id="faq" className="bg-gradient-to-b from-[#0D0F21] to-[#141631] text-[#F8FAFC] py-24">
           <div className="container mx-auto px-4">
             <motion.h2
               className="text-3xl md:text-4xl font-bold text-center mb-6"
@@ -555,17 +560,17 @@ export default function HomePage() {
               viewport={{ once: true }}
             >
               Frequently Asked{" "}
-              <span className="text-[#8B5CF6]">Questions</span>
+              <span className="text-[#C4B5FD]">Questions</span>
             </motion.h2>
 
             <motion.p
-              className="text-xl text-[#CBD5E1] text-center max-w-3xl mx-auto mb-16"
+              className="text-xl text-[#DDE2F1] text-center max-w-3xl mx-auto mb-16"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              Everything you need to know about CodeShare
+              Everything you need to know about CodeVault
             </motion.p>
 
             <div className="max-w-3xl mx-auto">
@@ -578,11 +583,11 @@ export default function HomePage() {
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <AccordionItem value={`item-${index}`} className="border border-[#334155] rounded-lg bg-[#1E293B] px-4">
+                    <AccordionItem value={`item-${index}`} className="border border-[#242960] rounded-lg bg-[#242960] px-4">
                       <AccordionTrigger className="text-lg font-medium py-4 hover:no-underline">
                         {faq.question}
                       </AccordionTrigger>
-                      <AccordionContent className="text-[#CBD5E1] pb-4">
+                      <AccordionContent className="text-base text-[#DDE2F1] pb-4">
                         {faq.answer}
                       </AccordionContent>
                     </AccordionItem>
@@ -593,10 +598,10 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* CTA Section */}
+        {/* CTA Section - Gradient accent */}
         <section className="container mx-auto px-4 py-20">
           <motion.div
-            className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-2xl p-10 text-center relative overflow-hidden"
+            className="bg-gradient-to-tr from-[#3637a6] to-[#3c1c87] rounded-2xl p-10 text-center relative overflow-hidden"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -630,9 +635,9 @@ export default function HomePage() {
         </section>
 
         {/* Footer */}
-        <footer className="bg-[#0F172A] py-6 border-t border-[#334155]">
-          <div className="container mx-auto px-4 text-center text-[#94A3B8]">
-            <p>© {new Date().getFullYear()} CodeShare. All rights reserved.</p>
+        <footer className="bg-[#0D0F21] py-6 border-t border-[#1F2143]">
+          <div className="container mx-auto px-4 text-center text-[#A1AFCF]">
+            <p>© {new Date().getFullYear()} CodeVault. All rights reserved.</p>
           </div>
         </footer>
       </div>

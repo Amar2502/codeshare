@@ -32,10 +32,20 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import LoadingEditor from "./EditorLoading";
 import JSZip from "jszip";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 type FileType = "html" | "css" | "js";
 
@@ -71,6 +81,12 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [projectName, setProjectName] = useState(
+    userProject?.project_name || ""
+  );
+  const [projectDescription, setProjectDescription] = useState(
+    userProject?.project_description || ""
+  );
 
   const router = useRouter();
 
@@ -165,7 +181,7 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
 
       console.log("Project updated successfully:", data);
       toast("Changes saved successfully", {
-        style: { backgroundColor: "#8DF19E", color: "#1A1325" } 
+        style: { backgroundColor: "#8DF19E", color: "#1A1325" },
       });
       return data;
     } catch (error) {
@@ -199,23 +215,55 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
     URL.revokeObjectURL(link.href);
 
     toast("File is being downloaded", {
-      style: { backgroundColor: "#8DF19E", color: "#1A1325" } 
+      style: { backgroundColor: "#8DF19E", color: "#1A1325" },
     });
+  };
+
+  const handleProjectDetailSave = async () => {
+    try {
+      const res = await fetch("/api/saveProjectDetails", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          project_name: decodeURIComponent(project_name),
+          newProjectName: projectName,
+          newProjectDescription: projectName,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error(
+          "Server Error:",
+          data.error || "Failed to update project"
+        );
+        return;
+      }
+      toast("Details changed successfully", {
+        style: { backgroundColor: "#8DF19E", color: "#1A1325" },
+      });
+      router.replace(`/${user_name}/${projectName}`);
+      return data;
+    } catch (error) {
+      console.error("Error updating Details:", error);
+    }
   };
 
   return (
     <TooltipProvider delayDuration={0}>
-      <div className="h-screen flex bg-black">
+      <div className="h-screen flex bg-gray-100 text-black">
         {/* Sidebar */}
         <div
           className={cn(
-            "bg-zinc-950 border-r border-purple-900/20 transition-all duration-300 flex flex-col",
+            "bg-gray-800 border-r border-gray-700 transition-all duration-300 flex flex-col",
             isSidebarOpen ? "w-44" : "w-14"
           )}
         >
           {/* Sidebar Header */}
-          <div className="p-4 border-b border-purple-900/20 flex items-center gap-3">
-            {/* <Code className="h-6 w-6 text-purple-400" /> */}
+          <div className="p-4 border-b border-gray-700 flex items-center gap-3">
             <div
               className={cn(
                 "transition-all duration-300 overflow-hidden",
@@ -225,7 +273,7 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
               <h1 className="font-semibold text-white">
                 {userProject?.project_name}
               </h1>
-              <p className="text-xs text-purple-400 truncate overflow-hidden whitespace-nowrap">
+              <p className="text-xs text-gray-400 truncate overflow-hidden whitespace-nowrap">
                 {userProject?.project_description}
               </p>
             </div>
@@ -236,7 +284,7 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
             <div className="p-2 space-y-2">
               <h2
                 className={cn(
-                  "text-xs font-semibold text-purple-300/70 uppercase tracking-wider transition-all duration-300",
+                  "text-xs font-semibold text-gray-300 uppercase tracking-wider transition-all duration-300",
                   !isSidebarOpen ? "opacity-0 w-0 h-0" : "opacity-100 w-auto"
                 )}
               >
@@ -249,10 +297,9 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
                       <Button
                         variant="ghost"
                         className={cn(
-                          "flex items-center justify-start gap-3 text-purple-100/70 hover:text-purple-100 hover:bg-purple-500/10 transition-all duration-300",
+                          "flex items-center justify-start gap-3 text-gray-300 hover:text-white hover:bg-gray-700 transition-all duration-300",
                           isSidebarOpen ? "w-full px-4" : "w-12 justify-center",
-                          activeFile === type &&
-                            "bg-purple-500/20 text-purple-100"
+                          activeFile === type && "bg-gray-700 text-white"
                         )}
                         onClick={() => setActiveFile(type)}
                       >
@@ -275,17 +322,7 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
                         </span>
                       </Button>
                     </TooltipTrigger>
-                    {!isSidebarOpen && (
-                      <TooltipContent>
-                        {type === "html"
-                          ? "index.html"
-                          : type === "css"
-                          ? "styles.css"
-                          : type === "js"
-                          ? "scripts.js"
-                          : "unknown"}
-                      </TooltipContent>
-                    )}
+                    {!isSidebarOpen && <TooltipContent>{type}</TooltipContent>}
                   </Tooltip>
                 ))}
               </div>
@@ -296,14 +333,14 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Top Navigation Bar */}
-          <div className="h-14 border-b border-purple-900/20 bg-zinc-950 flex items-center justify-between px-4">
-            <div className="flex items-center gap-2">
+          <div className="h-14 border-b border-gray-700 bg-gray-800 flex items-center justify-between px-4">
+            <div className="flex items-center">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
+                    className="h-9 w-9 text-gray-300 hover:text-purple-800"
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                   >
                     {isSidebarOpen ? (
@@ -315,107 +352,121 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
                 </TooltipTrigger>
                 <TooltipContent>Toggle Sidebar</TooltipContent>
               </Tooltip>
-              <Separator
-                orientation="vertical"
-                className="h-6 bg-purple-900/20"
-              />
-              <Tooltip key={`nav-SaveProject`}>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={handleSaveChanges}
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
-                  >
-                    <Save className="h-5 w-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Save Project</TooltipContent>
-              </Tooltip>
-              <Tooltip key={`nav-ShareProject`}>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={handleShareCode}
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
-                  >
-                    <Share className="h-5 w-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Share Project</TooltipContent>
-              </Tooltip>
             </div>
-
             <div className="flex items-center gap-2">
-              <Tooltip key={`nav-DownloadFiles`}>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={handleDownloadFile}
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
-                  >
-                    <Download className="h-5 w-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Download Files</TooltipContent>
-              </Tooltip>
-              <Tooltip key="nav-RunProject">
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={() => {
-                      window.open(`${window.location.pathname}/view`, "_blank");
-                    }}
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
-                  >
-                    <PlayCircle className="h-5 w-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>View in New Tab</TooltipContent>
-              </Tooltip>
-
-              <Tooltip key={`nav-Dashboard`}>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={() => {
-                      router.push(`/${user_name}`);
-                    }}
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
-                  >
-                    <StepBack className="h-5 w-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Dashboard</TooltipContent>
-              </Tooltip>
-              <Tooltip key={`nav-Settings`}>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-purple-400 hover:text-purple-300"
-                  >
-                    <Settings className="h-5 w-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Settings</TooltipContent>
-              </Tooltip>
-              <Separator
-                orientation="vertical"
-                className="h-6 bg-purple-900/20"
-              />
+              {[
+                {
+                  icon: Save,
+                  action: handleSaveChanges,
+                  label: "Save Project",
+                  hover: "hover:text-green-500",
+                },
+                {
+                  icon: Share,
+                  action: handleShareCode,
+                  label: "Share Project",
+                  hover: "hover:text-blue-500",
+                },
+                {
+                  icon: Download,
+                  action: handleDownloadFile,
+                  label: "Download Files",
+                  hover: "hover:text-red-500",
+                },
+                {
+                  icon: PlayCircle,
+                  action: () =>
+                    window.open(`${window.location.pathname}/view`, "_blank"),
+                  label: "View in New Tab",
+                  hover: "hover:text-green-500",
+                },
+                {
+                  icon: StepBack,
+                  action: () => router.push(`/${user_name}`),
+                  label: "Dashboard",
+                  hover: "hover:text-blue-500",
+                },
+              ].map(({ icon: Icon, action, label, hover }) => (
+                <Tooltip key={`nav-${label}`}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={action}
+                      variant="ghost"
+                      size="icon"
+                      className={`h-9 w-9 text-gray-300 ${hover}`}
+                    >
+                      <Icon className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{label}</TooltipContent>
+                </Tooltip>
+              ))}
             </div>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 text-gray-300 hover:text-white"
+                >
+                  <Settings className="h-5 w-5" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md bg-gray-900 text-white border border-gray-700">
+                <DialogHeader>
+                  <DialogTitle className="text-lg font-semibold">
+                    Edit Project Details
+                  </DialogTitle>
+                  <DialogDescription className="text-gray-400">
+                    Update your project name and description.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-300">
+                      Project Name
+                    </label>
+                    <Input
+                      className="mt-1 bg-gray-800 text-white border-gray-700 focus:ring-gray-500"
+                      value={projectName}
+                      onChange={(e) => setProjectName(e.target.value)}
+                      placeholder="Enter project name"
+                      required={true}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-300">
+                      Project Description
+                    </label>
+                    <textarea
+                      className="mt-1 w-full h-24 bg-gray-800 text-white border border-gray-700 rounded-md p-2 focus:ring-gray-500"
+                      value={projectDescription}
+                      onChange={(e) => setProjectDescription(e.target.value)}
+                      placeholder="Enter project description"
+                      required={true}
+                    />
+                  </div>
+                </div>
+                <DialogFooter className="flex justify-end space-x-2">
+                  <Button className="border-gray-600 text-gray-300 hover:text-white">
+                    Cancel
+                  </Button>
+                  <Button
+                    className="bg-gray-700 hover:bg-blue-500 text-white"
+                    onClick={handleProjectDetailSave}
+                  >
+                    Change
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* Editor and Preview */}
           <div className="flex-1">
             <ResizablePanelGroup direction="horizontal">
               <ResizablePanel defaultSize={55}>
-                <div className="h-[calc(100vh-3.5rem)] relative bg-zinc-950">
+                <div className="h-[calc(100vh-3.5rem)] relative bg-gray-200">
                   <div className="absolute inset-0">
                     <Editor
                       height="100%"
@@ -428,17 +479,13 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
                         fontSize: 14,
                         wordWrap: "on",
                         padding: { top: 16 },
-                        scrollbar: {
-                          verticalScrollbarSize: 8,
-                        },
+                        scrollbar: { verticalScrollbarSize: 8 },
                       }}
                     />
                   </div>
                 </div>
               </ResizablePanel>
-
-              <ResizableHandle className="bg-text hover:bg-text-700/20 w-px" />
-
+              <ResizableHandle className="bg-gray-700 w-px" />
               <ResizablePanel defaultSize={45}>
                 <div className="h-[calc(100vh-3.5rem)] bg-white">
                   <iframe
