@@ -164,7 +164,9 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
       }
 
       console.log("Project updated successfully:", data);
-      toast("Changes Saved Successfully")
+      toast("Changes saved successfully", {
+        style: { backgroundColor: "#8DF19E", color: "#1A1325" } 
+      });
       return data;
     } catch (error) {
       console.error("Error updating project:", error);
@@ -196,7 +198,9 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
 
     URL.revokeObjectURL(link.href);
 
-    toast("File is being downloaded")
+    toast("File is being downloaded", {
+      style: { backgroundColor: "#8DF19E", color: "#1A1325" } 
+    });
   };
 
   return (
@@ -433,7 +437,7 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
                 </div>
               </ResizablePanel>
 
-              <ResizableHandle className="bg-purple-900/20 hover:bg-purple-700/20" />
+              <ResizableHandle className="bg-text hover:bg-text-700/20 w-px" />
 
               <ResizablePanel defaultSize={45}>
                 <div className="h-[calc(100vh-3.5rem)] bg-white">

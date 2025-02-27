@@ -85,21 +85,31 @@ const ViewClient = ({ project_name }: ShareClientProps) => {
     return <LoadingEditor />;
   }
 
-  console.log(combinedCode);
-
   return (
     <>
-      <div className="h-screen w-screen">
+      <div className="h-screen w-screen relative">
         <iframe
           title="preview"
           srcDoc={combinedCode}
           className="w-full h-full"
           sandbox="allow-scripts"
         />
+  
+        {/* Floating Ball */}
+        <div className="fixed bottom-6 right-6 group">
+          <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center shadow-lg cursor-pointer relative transition-all duration-300 hover:scale-110">
+            <span className="text-white text-xl font-bold">⚡</span>
+  
+            {/* Tooltip (now on the left) */}
+            <div className="absolute right-full mr-3 w-max px-3 py-1 text-sm bg-gray-900 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              Powered by CodeVault
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
   
-}
+};
 
 export default ViewClient;
