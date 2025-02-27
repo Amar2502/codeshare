@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Code,
   Play,
@@ -9,36 +9,134 @@ import {
   ExternalLink,
   Monitor,
   X,
+  Check,
+  Users,
+  BookOpen,
+  Shield,
+  Star,
+  MessageSquare,
 } from "lucide-react";
 import Link from "next/link";
-import Head from "next/head";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import TryNowEditor from "./trynoweditor";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export default function HomePage() {
   const [hoverButton, setHoverButton] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [hoveredProject, setHoveredProject] = useState(null);
 
   const handleSignIn = async () => {
     await signIn("google", { callbackUrl: "/" });
   };
 
+  const faqs = [
+    {
+      question: "What is CodeShare?",
+      answer:
+        "CodeShare is a platform that allows developers to build, preview, and share web projects without the need for hosting or deployment knowledge. It's perfect for beginners, educators, and professionals who want to quickly showcase their HTML, CSS, and JavaScript projects.",
+    },
+    {
+      question: "Do I need to know Git to use CodeShare?",
+      answer:
+        "Not at all! One of the main benefits of CodeShare is that you don't need any knowledge of Git or version control. We handle all the technical aspects of saving and sharing your code, so you can focus on creating.",
+    },
+    {
+      question: "How do I share my projects with others?",
+      answer:
+        "Once you've created a project, CodeShare automatically generates a unique URL that you can share with anyone. Recipients can view your code and see the live preview without needing an account themselves.",
+    },
+    {
+      question: "Is CodeShare free to use?",
+      answer:
+        "Yes! CodeShare is completely free to use.",
+    },
+    {
+      question: "What programming languages does CodeShare support?",
+      answer:
+        "Currently, CodeShare supports HTML, CSS, and JavaScript. We're planning to add support for more languages and frameworks in the future based on user feedback.",
+    },
+  ];
+
+  const projects = [
+    {
+      title: "Portfolio Template",
+      description: "A responsive portfolio website with dark mode",
+      image: "/placeholder-portfolio.png",
+      sharelink: "http://localhost:3000/amar/Portfolio_Template/website",
+      author: "Alex Mercer",
+    },
+    {
+      title: "Todo App",
+      description: "Interactive task manager with local storage",
+      image: "/placeholder-todo.png",
+      sharelink: "http://localhost:3000/amar/Todo_App/website",
+      author: "Jamie Wong",
+    },
+    {
+      title: "Landing Page",
+      description: "Modern landing page with animations",
+      image: "/placeholder-landing.png",
+      sharelink: "http://localhost:3000/amar/Landing_Page/website",
+      author: "Sophia Garcia",
+    },
+  ];
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  };
+
+  const projectVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
+    },
+    hover: { 
+      y: -10,
+      scale: 1.02,
+      boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+      transition: { duration: 0.3, ease: "easeOut" }
+    }
+  };
+  
+  const imageVariants = {
+    hidden: { scale: 1 },
+    hover: { 
+      scale: 1.1,
+      transition: { duration: 0.5 }
+    }
+  };
+
   return (
     <>
-      <div className="min-h-screen bg-backgroundcolor text-text">
+      <div className="min-h-screen bg-[#0F172A] text-[#F8FAFC]">
         {/* Navbar */}
-        <nav className="container mx-auto px-4 py-6 flex items-center justify-between">
+        <nav className="container mx-auto px-4 pt-6 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Code className="h-8 w-8 text-blue-400" />
+            <Code className="h-8 w-8 text-[#60A5FA]" />
             <span className="text-2xl font-bold">
-              Code<span className="text-accentcolor">Share</span>
+              Code<span className="text-[#8B5CF6]">Share</span>
             </span>
           </div>
         </nav>
 
         {/* Hero Section */}
-        <main className="container mx-auto px-4 pt-16 pb-24">
+        <main className="container mx-auto px-4 pt-10 pb-24">
           <div className="flex flex-col lg:flex-row items-center gap-12">
             {/* Left Content */}
             <div className="lg:w-1/2 space-y-8">
@@ -48,11 +146,11 @@ export default function HomePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                Code, Preview, <span className="text-accentcolor">Share.</span>
+                Code, Preview, <span className="text-[#8B5CF6]">Share.</span>
               </motion.h1>
 
               <motion.p
-                className="text-xl text-text"
+                className="text-xl text-[#E2E8F0]"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -63,13 +161,33 @@ export default function HomePage() {
               </motion.p>
 
               <motion.div
+                className="space-y-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <div className="flex items-center space-x-2">
+                  <Check className="h-5 w-5 text-[#4ADE80]" />
+                  <span>No deployment or hosting knowledge required</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Check className="h-5 w-5 text-[#4ADE80]" />
+                  <span>Instant sharing with a simple URL</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Check className="h-5 w-5 text-[#4ADE80]" />
+                  <span>Live previews as you code</span>
+                </div>
+              </motion.div>
+
+              <motion.div
                 className="flex flex-col sm:flex-row gap-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
                 <motion.button
-                  className="bg-accentcolor hover:bg-secondarycolor text-white py-3 px-8 rounded-lg font-medium text-lg flex items-center justify-center space-x-2"
+                  className="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white py-3 px-8 rounded-lg font-medium text-lg flex items-center justify-center space-x-2"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onHoverStart={() => setHoverButton(true)}
@@ -84,7 +202,7 @@ export default function HomePage() {
                   {/* Button to Open Modal */}
                   <button
                     onClick={() => setIsOpen(true)}
-                    className="border border-purple-100 hover:border-accentcolor text-gray-300 hover:text-white py-3 px-8 rounded-lg font-medium text-lg flex items-center justify-center space-x-2"
+                    className="border border-[#4B5563] hover:border-[#8B5CF6] text-[#E2E8F0] hover:text-white py-3 px-8 rounded-lg font-medium text-lg flex items-center justify-center space-x-2"
                   >
                     <Monitor className="h-5 w-5" />
                     <span>Try Now</span>
@@ -92,12 +210,12 @@ export default function HomePage() {
 
                   {/* Modal */}
                   {isOpen && (
-                    <div className="fixed inset-0 bg-primarycolor bg-opacity-90 flex items-center justify-center z-50">
+                    <div className="fixed inset-0 bg-[#0F172A] bg-opacity-90 flex items-center justify-center z-50 backdrop-blur-sm">
                       <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
-                        className="bg-gray-900 text-white p-2 rounded-lg shadow-lg w-[90vw] max-w-5xl h-50vh flex flex-col relative"
+                        className="bg-[#1E293B] text-white p-2 rounded-lg shadow-lg w-[90vw] max-w-5xl h-50vh flex flex-col relative"
                       >
                         <button
                           onClick={() => setIsOpen(false)}
@@ -123,20 +241,20 @@ export default function HomePage() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <div className="bg-gray-800 rounded-xl overflow-hidden shadow-2xl border border-gray-700">
-                <div className="bg-gray-900 p-3 flex items-center space-x-2">
+              <div className="bg-[#1E293B] rounded-xl overflow-hidden shadow-2xl border border-[#334155]">
+                <div className="bg-[#0F172A] p-3 flex items-center space-x-2">
                   <div className="flex space-x-1.5">
                     <div className="w-3 h-3 rounded-full bg-red-500"></div>
                     <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
                   </div>
-                  <div className="text-gray-400 text-sm flex-1 text-center">
+                  <div className="text-[#94A3B8] text-sm flex-1 text-center">
                     index.html
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 h-80">
-                  <div className="bg-gray-950 p-4 font-mono text-sm text-blue-300 overflow-hidden border-r border-gray-700">
+                  <div className="bg-[#0F172A] p-4 font-mono text-sm text-[#60A5FA] overflow-hidden border-r border-[#334155]">
                     <pre>
                       {`<!DOCTYPE html>
 <html>
@@ -187,19 +305,19 @@ export default function HomePage() {
         </main>
 
         {/* Example Projects Section */}
-        <section className="bg-secondarycolor py-16">
+        <section id="projects" className="bg-[#1E293B] py-20">
           <div className="container mx-auto px-4">
             <motion.h2
-              className="text-3xl md:text-4xl font-bold text-center mb-8"
+              className="text-3xl md:text-4xl font-bold text-center mb-8 text-white"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
             >
-              Explore <span className="text-accentcolor">Projects</span>
+              Explore <span className="text-[#8B5CF6]">Projects</span>
             </motion.h2>
 
             <motion.p
-              className="text-xl text-gray-300 text-center max-w-3xl mx-auto mb-12"
+              className="text-xl text-[#CBD5E1] text-center max-w-3xl mx-auto mb-12"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -208,56 +326,218 @@ export default function HomePage() {
               Check out what other developers have created and shared
             </motion.p>
 
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "Portfolio Template",
-                  description: "A responsive portfolio website with dark mode",
-                  image: "/placeholder-portfolio.png",
-                  sharelink:
-                    "http://localhost:3000/amar/Portfolio_Template/website",
-                },
-                {
-                  title: "Todo App",
-                  description: "Interactive task manager with local storage",
-                  image: "/placeholder-todo.png",
-                  sharelink: "http://localhost:3000/amar/Todo_App/website",
-                },
-                {
-                  title: "Landing Page",
-                  description: "Modern landing page with animations",
-                  image: "/placeholder-landing.png",
-                  sharelink: "http://localhost:3000/amar/Landing_Page/website",
-                },
-              ].map((project, index) => (
+            <motion.div
+              className="grid md:grid-cols-3 gap-8"
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              {projects.map((project, index) => (
                 <motion.div
                   key={index}
-                  className="bg-primarycolor rounded-lg overflow-hidden shadow-lg"
+                  className="bg-[#0F172A] rounded-xl overflow-hidden shadow-xl border border-[#334155] h-full flex flex-col"
+                  variants={projectVariants}
+                  whileHover="hover"
+                  onHoverStart={() => setHoveredProject(index)}
+                  onHoverEnd={() => setHoveredProject(null)}
+                >
+                  <div className="h-48 overflow-hidden relative">
+                    <motion.div
+                      variants={imageVariants}
+                      animate={hoveredProject === index ? "hover" : "hidden"}
+                      className="h-full w-full"
+                    >
+                      <Image
+                        src={project.image}
+                        alt={project.title}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] to-transparent opacity-60"></div>
+                    </motion.div>
+                    
+                    <motion.div 
+                      className="absolute top-3 right-3 bg-[#8B5CF6] text-white p-1 px-2 rounded-full text-xs font-medium"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={hoveredProject === index ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      Live Demo
+                    </motion.div>
+                  </div>
+                  
+                  <div className="p-5 flex-1 flex flex-col">
+                    <h3 className="text-xl font-bold mb-2">{project.title}</h3>
+                    <p className="text-[#94A3B8] mb-4 flex-1">{project.description}</p>
+                    <div className="flex justify-between items-center mt-auto">
+                      <p className="text-[#64748B] text-sm">
+                        By {project.author}
+                      </p>
+                      <Link href={`${project.sharelink}`} passHref>
+                        <motion.div
+                          className="text-[#8B5CF6] hover:text-[#A78BFA] font-medium flex items-center group"
+                          whileHover={{ x: 5 }}
+                        >
+                          View Project 
+                          <ExternalLink className="h-4 w-4 ml-1 transition-transform duration-300 transform group-hover:translate-x-1" />
+                        </motion.div>
+                      </Link>
+                    </div>
+                  </div>
+                  
+                  <motion.div 
+                    className="h-1 bg-gradient-to-r from-[#8B5CF6] to-[#EC4899]"
+                    initial={{ scaleX: 0, originX: 0 }}
+                    animate={hoveredProject === index ? { scaleX: 1 } : { scaleX: 0 }}
+                    transition={{ duration: 0.4 }}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section id="features" className="bg-[#0F172A] py-24">
+          <div className="container mx-auto px-4">
+            <motion.h2
+              className="text-3xl md:text-4xl font-bold text-center mb-6"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+            >
+              Why Choose <span className="text-[#8B5CF6]">CodeShare</span>?
+            </motion.h2>
+
+            <motion.p
+              className="text-xl text-[#CBD5E1] text-center max-w-3xl mx-auto mb-16"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              Building and sharing web projects has never been easier
+            </motion.p>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  icon: <Code className="h-8 w-8 text-[#8B5CF6]" />,
+                  title: "Live Preview",
+                  description:
+                    "See your changes in real-time as you code with our instant preview feature.",
+                },
+                {
+                  icon: <Share2 className="h-8 w-8 text-[#8B5CF6]" />,
+                  title: "Instant Sharing",
+                  description:
+                    "Share your projects with a simple link. No hosting or deployment needed.",
+                },
+                {
+                  icon: <Database className="h-8 w-8 text-[#8B5CF6]" />,
+                  title: "No Git Required",
+                  description:
+                    "Skip the version control complexities. We handle everything for you.",
+                },
+                {
+                  icon: <Users className="h-8 w-8 text-[#8B5CF6]" />,
+                  title: "Collaborative Editing",
+                  description:
+                    "Work together in real-time with teammates on the same project.",
+                },
+                {
+                  icon: <BookOpen className="h-8 w-8 text-[#8B5CF6]" />,
+                  title: "Learning Resources",
+                  description:
+                    "Access tutorials and sample projects to improve your coding skills.",
+                },
+                {
+                  icon: <Shield className="h-8 w-8 text-[#8B5CF6]" />,
+                  title: "Secure Storage",
+                  description:
+                    "Your projects are securely stored and backed up regularly.",
+                },
+              ].map((feature, index) => (
+                <motion.div
+                  key={index}
+                  className="bg-[#1E293B] p-6 rounded-xl border border-[#334155] hover:border-[#8B5CF6] transition-all duration-300"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
+                  whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <div className="h-48 bg-gray-700 relative">
-                    <Image
-                      src={project.image}
-                      alt={project.title}
-                      layout="fill"
-                      objectFit="cover"
-                      className="opacity-90 hover:opacity-100 transition-opacity"
-                    />
+                  <div className="bg-[#2D3748] inline-block p-4 rounded-lg mb-4">
+                    {feature.icon}
                   </div>
-                  <div className="p-5">
-                    <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                    <p className="text-gray-300 mb-4">{project.description}</p>
-                    <Link href={`${project.sharelink}`} passHref>
-                      <motion.div
-                        className="text-blue-400 hover:text-blue-300 font-medium flex items-center"
-                        whileHover={{ x: 5 }}
-                      >
-                        View Project <ExternalLink className="h-4 w-4 ml-1" />
-                      </motion.div>
-                    </Link>
+                  <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                  <p className="text-[#CBD5E1]">{feature.description}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* How It Works Section */}
+        <section className="bg-[#1E293B] py-24">
+          <div className="container mx-auto px-4">
+            <motion.h2
+              className="text-3xl md:text-4xl font-bold text-center mb-6"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+            >
+              How <span className="text-[#8B5CF6]">It Works</span>
+            </motion.h2>
+
+            <motion.p
+              className="text-xl text-[#CBD5E1] text-center max-w-3xl mx-auto mb-16"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              Get started in just three simple steps
+            </motion.p>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  step: "01",
+                  title: "Sign Up",
+                  description:
+                    "Create your free account using your Google Credentials.",
+                },
+                {
+                  step: "02",
+                  title: "Build Your Project",
+                  description:
+                    "Use our intuitive code editor to create your HTML, CSS, and JavaScript project.",
+                },
+                {
+                  step: "03",
+                  title: "Share Instantly",
+                  description:
+                    "Get a shareable link immediately. No deployment or hosting required.",
+                },
+              ].map((step, index) => (
+                <motion.div
+                  key={index}
+                  className="relative"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.2 }}
+                >
+                  <div className="text-8xl font-bold text-[#0F172A] absolute -top-10 left-0 opacity-30">
+                    {step.step}
+                  </div>
+                  <div className="bg-[#0F172A] p-8 rounded-xl relative z-10">
+                    <h3 className="text-2xl font-bold mb-4 text-white">
+                      {step.title}
+                    </h3>
+                    <p className="text-[#CBD5E1]">{step.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -265,54 +545,50 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Features Section */}
-        <section className="bg-backgroundcolor py-24">
+        {/* FAQ Section with shadcn Accordion */}
+        <section id="faq" className="bg-[#0F172A] py-24">
           <div className="container mx-auto px-4">
             <motion.h2
-              className="text-3xl md:text-4xl font-bold text-center mb-16"
+              className="text-3xl md:text-4xl font-bold text-center mb-6"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
             >
-              Why Choose <span className="text-accentcolor">CodeShare</span>?
+              Frequently Asked{" "}
+              <span className="text-[#8B5CF6]">Questions</span>
             </motion.h2>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: <Code className="h-8 w-8 text-accentcolor" />,
-                  title: "Live Preview",
-                  description:
-                    "See your changes in real-time as you code with our instant preview feature.",
-                },
-                {
-                  icon: <Share2 className="h-8 w-8 text-accentcolor" />,
-                  title: "Instant Sharing",
-                  description:
-                    "Share your projects with a simple link. No hosting or deployment needed.",
-                },
-                {
-                  icon: <Database className="h-8 w-8 text-accentcolor" />,
-                  title: "No Git Required",
-                  description:
-                    "Skip the version control complexities. We handle everything for you.",
-                },
-              ].map((feature, index) => (
-                <motion.div
-                  key={index}
-                  className="bg-secondarycolor p-6 rounded-xl"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.2 }}
-                >
-                  <div className="bg-gray-700 inline-block p-4 rounded-lg mb-4">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                  <p className="text-text">{feature.description}</p>
-                </motion.div>
-              ))}
+            <motion.p
+              className="text-xl text-[#CBD5E1] text-center max-w-3xl mx-auto mb-16"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              Everything you need to know about CodeShare
+            </motion.p>
+
+            <div className="max-w-3xl mx-auto">
+              <Accordion type="single" collapsible className="space-y-4">
+                {faqs.map((faq, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <AccordionItem value={`item-${index}`} className="border border-[#334155] rounded-lg bg-[#1E293B] px-4">
+                      <AccordionTrigger className="text-lg font-medium py-4 hover:no-underline">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-[#CBD5E1] pb-4">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </motion.div>
+                ))}
+              </Accordion>
             </div>
           </div>
         </section>
@@ -320,34 +596,42 @@ export default function HomePage() {
         {/* CTA Section */}
         <section className="container mx-auto px-4 py-20">
           <motion.div
-            className="bg-secondarycolor rounded-2xl p-10 text-center"
+            className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-2xl p-10 text-center relative overflow-hidden"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to start creating?
-            </h2>
-            <p className="text-xl mb-8 max-w-2xl mx-auto">
-              Just one click and you can start building your web project right
-              away.
-            </p>
+            {/* Decorative elements */}
+            <div className="absolute top-0 left-0 w-full h-full opacity-10">
+              <div className="absolute top-10 left-10 w-40 h-40 rounded-full bg-white"></div>
+              <div className="absolute bottom-10 right-10 w-60 h-60 rounded-full bg-white"></div>
+            </div>
+            
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                Ready to start creating?
+              </h2>
+              <p className="text-xl mb-8 max-w-2xl mx-auto">
+                Just one click and you can start building your web project right
+                away.
+              </p>
 
-            <motion.button
-              className="bg-white text-primarycolor py-3 px-10 rounded-lg font-medium text-lg inline-flex items-center space-x-2"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleSignIn}
-            >
-              <Play className="h-5 w-5" />
-              <span>Start Creating</span>
-            </motion.button>
+              <motion.button
+                className="bg-white text-[#4C1D95] py-3 px-10 rounded-lg font-medium text-lg inline-flex items-center space-x-2 shadow-lg"
+                whileHover={{ scale: 1.05, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleSignIn}
+              >
+                <Play className="h-5 w-5" />
+                <span>Start Creating</span>
+              </motion.button>
+            </div>
           </motion.div>
         </section>
 
         {/* Footer */}
-        <footer className="bg-gray-950 py-3">
-          <div className="container mx-auto px-4 text-center text-gray-400">
+        <footer className="bg-[#0F172A] py-6 border-t border-[#334155]">
+          <div className="container mx-auto px-4 text-center text-[#94A3B8]">
             <p>© {new Date().getFullYear()} CodeShare. All rights reserved.</p>
           </div>
         </footer>
