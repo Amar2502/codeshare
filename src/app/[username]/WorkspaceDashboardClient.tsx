@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   Plus,
   MoreVertical,
@@ -55,6 +55,11 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
   username,
 }) => {
   const router = useRouter();
+  const params = useParams();
+
+  if(params.username!=username) {
+    router.replace(`/${username}`)
+  }
 
   const handleDeleteProject = async (project_name: string) => {
     try {

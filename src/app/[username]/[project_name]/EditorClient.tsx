@@ -32,7 +32,7 @@ import {
 import { toast } from "sonner";
 import LoadingEditor from "./EditorLoading";
 import JSZip from "jszip";
-import { useRouter } from "next/navigation";
+import { redirect, useParams, useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -57,8 +57,7 @@ type Project = {
 };
 
 type EditorClientProps = {
-  user_name: string;
-  project_name: string;
+  loggedIn_name: string;
 };
 
 // Map file types to languages and icons
@@ -68,7 +67,7 @@ const fileTypeConfig = {
   js: { language: "javascript", icon: FileCode },
 };
 
-const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
+const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
   const [userProject, setUserProject] = useState<Project | null>(null);
   const [activeFile, setActiveFile] = useState<FileType>("html");
   const [fileContents, setFileContents] = useState<Record<FileType, string>>({
@@ -86,12 +85,19 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
   );
 
   const router = useRouter();
+  const params = useParams();
+
+  useEffect(() => {
+    if(loggedIn_name!=params.username) {
+      redirect("/")
+    }
+  }, [loggedIn_name, params])
 
   useEffect(() => {
     const fetchProjectDetails = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch(`/api/projects/${project_name}`);
+        const res = await fetch(`/api/projects/${params.project_name}`);
         const data = await res.json();
 
         if (!res.ok) {
@@ -112,7 +118,7 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
     };
 
     fetchProjectDetails();
-  }, [project_name]);
+  }, [params.project_name]);
 
   const handleCodeChange = (value: string | undefined) => {
     setFileContents((prev) => ({
@@ -148,7 +154,7 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
 
   const handleSaveChanges = async () => {
     try {
-      if (!project_name) {
+      if (!params.project_name) {
         console.error("Error: Project name is missing");
         return;
       }
@@ -159,7 +165,7 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          project_name: decodeURIComponent(project_name),
+          project_name: decodeURIComponent(params.project_name as string),
           html: fileContents.html || "", // Ensure it's not undefined
           css: fileContents.css || "",
           javascript: fileContents.js || fileContents.js || "", // Use correct field name
@@ -227,7 +233,7 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          project_name: decodeURIComponent(project_name),
+          project_name: decodeURIComponent(params.project_name as string),
           newProjectName: projectName,
           newProjectDescription: projectName,
         }),
@@ -245,7 +251,7 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
       toast("Details changed successfully", {
         style: { backgroundColor: "#8DF19E", color: "#1A1325" },
       });
-      router.replace(`/${user_name}/${projectName}`);
+      router.replace(`/${params.username}/${projectName}`);
       return data;
     } catch (error) {
       console.error("Error updating Details:", error);
@@ -382,7 +388,7 @@ const EditorClient = ({ user_name, project_name }: EditorClientProps) => {
                 },
                 {
                   icon: StepBack,
-                  action: () => router.push(`/${user_name}`),
+                  action: () => router.push(`/${params.username}`),
                   label: "Dashboard",
                   hover: "hover:text-blue-500",
                 },

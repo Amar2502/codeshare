@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import LoadingEditor from "../EditorLoading";
+import { useParams } from "next/navigation";
 
 // type Project = {
 //   project_name: string;
@@ -19,10 +20,10 @@ import LoadingEditor from "../EditorLoading";
 //   js: { language: "javascript" },
 // };
 
-type ShareClientProps = {
-  user_name: string;
-  project_name: string;
-};
+// type ShareClientProps = {
+//   user_name: string;
+//   project_name: string;
+// };
 
 type File = {
   html: string;
@@ -30,7 +31,7 @@ type File = {
   javascript: string;
 };
 
-const WebsiteClient = ({ user_name, project_name }: ShareClientProps) => {
+const WebsiteClient = () => {
   // const [userProject, setUserProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fileContents, setFileContents] = useState<File>({
@@ -39,13 +40,15 @@ const WebsiteClient = ({ user_name, project_name }: ShareClientProps) => {
     javascript: "",
   });
 
+  const params = useParams();
+
   useEffect(() => {
     const fetchProjectDetails = async () => {
       try {
         setIsLoading(true);
         const res = await fetch(
-          `/api/shareproject?user_name=${user_name}&project_name=${encodeURIComponent(
-            project_name
+          `/api/shareproject?user_name=${params.username}&project_name=${encodeURIComponent(
+            params.project_name as string
           )}`
         );
 
@@ -70,7 +73,7 @@ const WebsiteClient = ({ user_name, project_name }: ShareClientProps) => {
     };
 
     fetchProjectDetails();
-  }, [project_name, user_name]);
+  }, [params.project_name, params.username]);
 
   const combinedCode = useMemo(() => {
     const { html, css, javascript } = fileContents;

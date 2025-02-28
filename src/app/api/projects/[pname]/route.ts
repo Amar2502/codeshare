@@ -1,29 +1,29 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/dbConnect";
 import { auth } from "@/auth";
 import User from "@/models/user";
 
-// type ProjectUpdateRequest = {
-//   project_name: string;
-//   html?: string;
-//   css?: string;
-//   javascript?: string;
-// };
+// Explicitly define RouteContext type
+// interface RouteContext {
+//   params: { pname: string };
+// }
 
 type Project = {
-  project_name: string;
-  project_description: string;
+  project_name: string,
+  project_description: string,
   files: {
-    html: string;
-    css: string;
-    javascript: string;
-  };
-};
+    html: string,
+    css: string,
+    javascript: string
+  }
+}
 
-export async function GET(req: Request, { params }: { params: { pname: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { pname: string } }
+) {
   try {
-
-    const param = await params;
+    const pname = params.pname; // ✅ Correct way to access params
 
     await dbConnect(); // Ensure database connection
 
@@ -40,7 +40,7 @@ export async function GET(req: Request, { params }: { params: { pname: string } 
     }
 
     const userProjects = Array.isArray(user.projects) ? user.projects : [];
-    const project = userProjects.find((p: Project) => p.project_name === param.pname);
+    const project = userProjects.find((p:Project) => p.project_name === pname); // ✅ Use pname directly
 
     if (!project) {
       return NextResponse.json({ success: false, error: "Project not found" }, { status: 404 });

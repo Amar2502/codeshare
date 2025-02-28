@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import LoadingEditor from "../EditorLoading";
+import { useParams } from "next/navigation";
 
 // type Project = {
 //   project_name: string;
@@ -19,9 +20,9 @@ import LoadingEditor from "../EditorLoading";
 //   js: { language: "javascript" },
 // };
 
-type ShareClientProps = {
-  project_name: string;
-};
+// type ShareClientProps = {
+//   project_name: string;
+// };
 
 type File = {
   html: string;
@@ -29,7 +30,7 @@ type File = {
   javascript: string;
 };
 
-const ViewClient = ({ project_name }: ShareClientProps) => {
+const ViewClient = () => {
   // const [userProject, setUserProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fileContents, setFileContents] = useState<File>({
@@ -38,11 +39,13 @@ const ViewClient = ({ project_name }: ShareClientProps) => {
     javascript: "",
   });
 
+  const params = useParams();
+
   useEffect(() => {
     const fetchProjectDetails = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch(`/api/projects/${project_name}`);
+        const res = await fetch(`/api/projects/${params.project_name}`);
         const data = await res.json();
 
         if (!res.ok) {
@@ -63,7 +66,7 @@ const ViewClient = ({ project_name }: ShareClientProps) => {
     };
 
     fetchProjectDetails();
-  }, [project_name]);
+  }, [params]);
 
   const combinedCode = useMemo(() => {
     const { html, css, javascript } = fileContents;

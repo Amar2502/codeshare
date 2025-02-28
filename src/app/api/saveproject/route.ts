@@ -11,14 +11,15 @@ type ProjectUpdateRequest = {
 };
 
 type Project = {
-  project_name: string,
-  project_description: string,
+  project_name: string;
+  project_description?: string;
   files: {
-    html: string,
-    css: string,
-    javascript: string
-  }
-}
+    html: string;
+    css: string;
+    javascript: string;
+  };
+};
+
 export async function PUT(req: Request) {
   try {
     const session = await auth();
