@@ -13,12 +13,15 @@ type PageProps = {
 };
 
 export default async function EditorPage({ params }: PageProps) {
+
+  const param = await params;
+
   // Ensure params exist and have required fields
-  if (!params?.username || !params?.project_name) {
+  if (!param?.username || !param?.project_name) {
     return <div>Error: Parameters missing</div>;
   }
 
-  const { username, project_name } = params;
+  const { username, project_name } = param;
 
   const session = await auth();
 
