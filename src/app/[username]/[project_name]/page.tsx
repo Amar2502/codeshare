@@ -6,27 +6,24 @@ import { redirect } from "next/navigation";
 import { NotLoggedInError } from "../NotLogged";
 
 type PageProps = {
-  params: {
-    username: string;
-    project_name: string;
+  params?: {
+    username?: string;
+    project_name?: string;
   };
 };
 
 export default async function EditorPage({ params }: PageProps) {
-  if (!params) {
-    return <div>Error: Parameters not found</div>;
-  }
-
-  const { username, project_name } = params; // No need to await
-
-  if (!username || !project_name) {
+  // Ensure params exist and have required fields
+  if (!params?.username || !params?.project_name) {
     return <div>Error: Parameters missing</div>;
   }
+
+  const { username, project_name } = params;
 
   const session = await auth();
 
   if (!session?.user) {
-    redirect('/'); // Ensures Next.js handles redirection properly
+    redirect('/');
   }
 
   const loggedInUsername = session.user.name;
