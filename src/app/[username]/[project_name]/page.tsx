@@ -16,7 +16,7 @@ type PageProps = {
 // Remove async from params since they're already resolved by Next.js
 export default async function EditorPage({ params }: PageProps) {
   // No need to await params - Next.js provides them synchronously
-  const { username, project_name } = params;
+  const { username, project_name } = await params;
 
   // Check for missing parameters
   if (!username || !project_name) {
