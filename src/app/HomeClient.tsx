@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Code,
   Play,
@@ -29,6 +29,9 @@ export default function HomePage() {
   const [hoverButton, setHoverButton] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredProject, setHoveredProject] = useState<number>();
+
+  console.log(hoverButton);
+  
 
   const handleSignIn = async () => {
     await signIn("google", { callbackUrl: "/" });

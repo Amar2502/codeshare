@@ -70,7 +70,7 @@ const WebsiteClient = ({ user_name, project_name }: ShareClientProps) => {
     };
 
     fetchProjectDetails();
-  }, [project_name]);
+  }, [project_name, user_name]);
 
   const combinedCode = useMemo(() => {
     const { html, css, javascript } = fileContents;
