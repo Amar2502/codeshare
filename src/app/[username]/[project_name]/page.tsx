@@ -6,9 +6,9 @@ import { redirect } from "next/navigation";
 import { NotLoggedInError } from "../NotLogged";
 
 type PageProps = {
-  params?: {
-    username?: string;
-    project_name?: string;
+  params: {
+    username: string;
+    project_name: string;
   };
 };
 
