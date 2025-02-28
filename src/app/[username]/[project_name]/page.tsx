@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { auth } from "@/auth";
 import EditorClient from "./EditorClient";
@@ -13,41 +13,27 @@ type PageProps = {
 };
 
 export default async function EditorPage({ params }: PageProps) {
-
-  const param = await params;
-
-  if (!param) {
+  if (!params) {
     return <div>Error: Parameters not found</div>;
+  }
+
+  const { username, project_name } = params; // No need to await
+
+  if (!username || !project_name) {
+    return <div>Error: Parameters missing</div>;
   }
 
   const session = await auth();
-  
-    if (!session?.user) {
-      redirect('/');
-    }
 
-  // Ensure params are awaited before use
-  const { username, project_name } = param; 
+  if (!session?.user) {
+    redirect('/'); // Ensures Next.js handles redirection properly
+  }
 
   const loggedInUsername = session.user.name;
-  
-    if (username !== loggedInUsername) {
-      return <NotLoggedInError/>;
-    }
 
-  if (!username || !project_name) {
-    return <div>Error: Parameters not found</div>;
+  if (username !== loggedInUsername) {
+    return <NotLoggedInError />;
   }
-  
-  // const response = await getProjectDetails(project_name);  
-  // const projectDetails = response.project;
-  // console.log(projectDetails)
 
-  // if (!projectDetails) {
-  //   return <div>Project not found</div>;
-  // }
-
-  // return <EditorClient />
-  return <EditorClient user_name={username} project_name={project_name}/>
-  // return <h1>Hello World</h1>;
+  return <EditorClient user_name={username} project_name={project_name} />;
 }
