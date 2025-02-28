@@ -3,12 +3,12 @@ import { dbConnect } from "@/lib/dbConnect";
 import { auth } from "@/auth";
 import User from "@/models/user";
 
-type ProjectUpdateRequest = {
-  project_name: string;
-  html?: string;
-  css?: string;
-  javascript?: string;
-};
+// type ProjectUpdateRequest = {
+//   project_name: string;
+//   html?: string;
+//   css?: string;
+//   javascript?: string;
+// };
 
 type Project = {
   project_name: string;
@@ -40,7 +40,7 @@ export async function GET(req: Request, { params }: { params: { pname: string } 
     }
 
     const userProjects = Array.isArray(user.projects) ? user.projects : [];
-    const project = userProjects.find((p: any) => p.project_name === param.pname);
+    const project = userProjects.find((p: Project) => p.project_name === param.pname);
 
     if (!project) {
       return NextResponse.json({ success: false, error: "Project not found" }, { status: 404 });

@@ -9,6 +9,12 @@ type PageProps = {
   };
 };
 
+type SessionUser = {
+    name: string;
+    id: string;
+    projects: []
+}
+
 console.log(typeof NotLoggedInError);
 
 
@@ -36,7 +42,7 @@ export default async function WorkspaceDashboardPage({ params }: PageProps) {
 
   const profileimage = session.user.image || "/default-avatar.png";
   const user_name = session.user.name || "";
-  const projects = (session.user as any).projects || [];
+  const projects = (session.user as SessionUser).projects || [];
 
   return (
     <WorkspaceDashboardClient 

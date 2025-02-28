@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/resizable";
 import { cn } from "@/lib/utils";
 import {
-  Code,
   FileText,
   FileJson,
   FileCode,
@@ -19,7 +18,6 @@ import {
   Share,
   Settings,
   Download,
-  Copy,
   PlayCircle,
   StepBack,
 } from "lucide-react";
@@ -31,7 +29,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import LoadingEditor from "./EditorLoading";
 import JSZip from "jszip";

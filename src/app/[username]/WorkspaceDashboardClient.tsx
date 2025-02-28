@@ -10,8 +10,6 @@ import {
   Share,
   Globe,
   Code,
-  User,
-  Settings,
   LogOut,
 } from "lucide-react";
 import {

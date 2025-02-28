@@ -3,21 +3,21 @@
 import React, { useEffect, useMemo, useState } from "react";
 import LoadingEditor from "../EditorLoading";
 
-type Project = {
-  project_name: string;
-  project_description: string;
-  files: {
-    html: string;
-    css: string;
-    javascript: string;
-  };
-};
+// type Project = {
+//   project_name: string;
+//   project_description: string;
+//   files: {
+//     html: string;
+//     css: string;
+//     javascript: string;
+//   };
+// };
 
-const fileTypeConfig = {
-  html: { language: "html" },
-  css: { language: "css" },
-  js: { language: "javascript" },
-};
+// const fileTypeConfig = {
+//   html: { language: "html" },
+//   css: { language: "css" },
+//   js: { language: "javascript" },
+// };
 
 type ShareClientProps = {
   user_name: string;
@@ -31,7 +31,7 @@ type File = {
 };
 
 const WebsiteClient = ({ user_name, project_name }: ShareClientProps) => {
-  const [userProject, setUserProject] = useState<Project | null>(null);
+  // const [userProject, setUserProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fileContents, setFileContents] = useState<File>({
     html: "",
@@ -56,7 +56,7 @@ const WebsiteClient = ({ user_name, project_name }: ShareClientProps) => {
           throw new Error(data.error || "Failed to fetch project details");
         }
 
-        setUserProject(data.project);
+        // setUserProject(data.project);
         setFileContents({
           html: data.project.files.html || "",
           css: data.project.files.css || "",

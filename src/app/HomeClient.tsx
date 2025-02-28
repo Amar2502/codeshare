@@ -10,12 +10,7 @@ import {
   Monitor,
   X,
   Check,
-  Users,
-  BookOpen,
   Shield,
-  Star,
-  MessageSquare,
-  Palette,
   Folder,
   Layout,
 } from "lucide-react";
