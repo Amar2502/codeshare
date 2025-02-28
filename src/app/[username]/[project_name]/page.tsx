@@ -5,6 +5,7 @@ import EditorClient from "./EditorClient";
 import { redirect } from "next/navigation";
 import { NotLoggedInError } from "../NotLogged";
 
+// Correct PageProps type definition
 type PageProps = {
   params: {
     username: string;
@@ -12,16 +13,15 @@ type PageProps = {
   };
 };
 
+// Remove async from params since they're already resolved by Next.js
 export default async function EditorPage({ params }: PageProps) {
+  // No need to await params - Next.js provides them synchronously
+  const { username, project_name } = params;
 
-  const param = await params;
-
-  // Ensure params exist and have required fields
-  if (!param?.username || !param?.project_name) {
+  // Check for missing parameters
+  if (!username || !project_name) {
     return <div>Error: Parameters missing</div>;
   }
-
-  const { username, project_name } = param;
 
   const session = await auth();
 
