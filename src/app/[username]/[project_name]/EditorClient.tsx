@@ -95,15 +95,17 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
 
   useEffect(() => {
     const fetchProjectDetails = async () => {
+      if (!params.project_name) return; // Prevent fetching if project_name is missing
+  
       try {
         setIsLoading(true);
-        const res = await fetch(`/api/projects/${params.project_name}`);
+        const res = await fetch(`/api/projects?pname=${encodeURIComponent(params.project_name as string)}`);
         const data = await res.json();
-
+  
         if (!res.ok) {
           throw new Error(data.error || "Failed to fetch project details");
         }
-
+  
         setUserProject(data.project);
         setFileContents({
           html: data.project.files.html || "",
@@ -116,9 +118,10 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
         setIsLoading(false);
       }
     };
-
+  
     fetchProjectDetails();
-  }, [params.project_name]);
+  }, [params.project_name]); // Ensure it runs when project_name changes
+  
 
   const handleCodeChange = (value: string | undefined) => {
     setFileContents((prev) => ({

@@ -3,11 +3,6 @@ import { dbConnect } from "@/lib/dbConnect";
 import { auth } from "@/auth";
 import User from "@/models/user";
 
-// Explicitly define RouteContext type
-// interface RouteContext {
-//   params: { pname: string };
-// }
-
 type Project = {
   project_name: string,
   project_description: string,
@@ -18,14 +13,9 @@ type Project = {
   }
 }
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { pname: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const pname = params.pname; // ✅ Correct way to access params
-
-    await dbConnect(); // Ensure database connection
+    await dbConnect();
 
     const session = await auth();
     if (!session?.user?.email) {
@@ -39,8 +29,15 @@ export async function GET(
       return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
     }
 
+    // Extract pname from the query string: /api/projects?pname=MyProject
+    const pname = request.nextUrl.searchParams.get("pname");
+
+    if (!pname) {
+      return NextResponse.json({ success: false, error: "Project name is required" }, { status: 400 });
+    }
+
     const userProjects = Array.isArray(user.projects) ? user.projects : [];
-    const project = userProjects.find((p:Project) => p.project_name === pname); // ✅ Use pname directly
+    const project = userProjects.find((p: Project) => p.project_name === pname);
 
     if (!project) {
       return NextResponse.json({ success: false, error: "Project not found" }, { status: 404 });
