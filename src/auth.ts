@@ -1,8 +1,7 @@
-import NextAuth from "next-auth";
+import NextAuth, { Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { dbConnect } from "./lib/dbConnect";
 import User from "./models/user";
-
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -26,23 +25,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               ? profile.name.replace(/\s+/g, "").toLowerCase() // Remove spaces & convert to lowercase
               : profile?.email?.split("@")[0] || "user";
 
-              console.log(username);
-              
-        
+            console.log(username);
+
             // Create new user in MongoDB
             await User.create({
               name: username,
               email: profile?.email,
               image: profile?.picture || "",
+              projects: [], // Ensure projects is always an array for new users
             });
-        
+
             console.log(`User created: ${username}`);
           } catch (error) {
             console.error("Error creating user:", error);
           }
         }
-        
-        
 
         return true; // Allow sign-in
       } catch (error) {
@@ -50,12 +47,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return false; // Deny sign-in if error occurs
       }
     },
-    async session({ session }) {
+    async session({ session }: { session: Session }) {
       if (session.user) {
+        await dbConnect(); // Ensure DB connection
         const dbUser = await User.findOne({ email: session.user.email });
-        session.user.name = dbUser.name;
-        session.user.id = dbUser._id.toString(); // Attach DB user ID to session
-        session.user.projects = dbUser.projects;
+
+        if (!dbUser) return session; // Ensure dbUser exists
+
+        session.user = {
+          ...session.user,
+          name: dbUser.name,
+          id: dbUser._id.toString(),
+          projects: dbUser.projects ?? [], // Ensure projects is always an array
+        };
       }
       return session;
     },
