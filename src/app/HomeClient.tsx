@@ -39,29 +39,29 @@ export default function HomePage() {
 
   const faqs = [
     {
-      question: "What is CodeVault?",
+      question: "What is CodeShare?",
       answer:
-        "CodeVault is a platform that allows developers to build, preview, and share web projects without the need for hosting or deployment knowledge. It's perfect for beginners, educators, and professionals who want to quickly showcase their HTML, CSS, and JavaScript projects.",
+        "CodeShare is a platform that allows developers to build, preview, and share web projects without the need for hosting or deployment knowledge. It's perfect for beginners, educators, and professionals who want to quickly showcase their HTML, CSS, and JavaScript projects.",
     },
     {
-      question: "Do I need to know Git to use CodeVault?",
+      question: "Do I need to know Git to use CodeShare?",
       answer:
-        "Not at all! One of the main benefits of CodeVault is that you don't need any knowledge of Git or version control. We handle all the technical aspects of saving and sharing your code, so you can focus on creating.",
+        "Not at all! One of the main benefits of CodeShare is that you don't need any knowledge of Git or version control. We handle all the technical aspects of saving and sharing your code, so you can focus on creating.",
     },
     {
       question: "How do I share my projects with others?",
       answer:
-        "Once you've created a project, CodeVault automatically generates a unique URL that you can share with anyone. Recipients can view your code and see the live preview without needing an account themselves.",
+        "Once you've created a project, CodeShare automatically generates a unique URL that you can share with anyone. Recipients can view your code and see the live preview without needing an account themselves.",
     },
     {
-      question: "Is CodeVault free to use?",
+      question: "Is CodeShare free to use?",
       answer:
-        "Yes! CodeVault is completely free to use.",
+        "Yes! CodeShare is completely free to use.",
     },
     {
-      question: "What programming languages does CodeVault support?",
+      question: "What programming languages does CodeShare support?",
       answer:
-        "Currently, CodeVault supports HTML, CSS, and JavaScript. We're planning to add support for more languages and frameworks in the future based on user feedback.",
+        "Currently, CodeShare supports HTML, CSS, and JavaScript. We're planning to add support for more languages and frameworks in the future based on user feedback.",
     },
   ];
 
@@ -408,7 +408,7 @@ export default function HomePage() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
             >
-              Why Choose <span className="text-[#A78BFA]">CodeVault</span>?
+              Why Choose <span className="text-[#A78BFA]">CodeShare</span>?
             </motion.h2>
 
             <motion.p
@@ -568,7 +568,7 @@ export default function HomePage() {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              Everything you need to know about CodeVault
+              Everything you need to know about CodeShare
             </motion.p>
 
             <div className="max-w-3xl mx-auto">
@@ -635,7 +635,7 @@ export default function HomePage() {
         {/* Footer */}
         <footer className="bg-[#0D0F21] py-6 border-t border-[#1F2143]">
           <div className="container mx-auto px-4 text-center text-[#A1AFCF]">
-            <p>© {new Date().getFullYear()} CodeVault. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} CodeShare. All rights reserved.</p>
           </div>
         </footer>
       </div>
