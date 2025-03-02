@@ -58,7 +58,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           ...session.user,
           name: dbUser.name,
           id: dbUser._id.toString(),
-          projects: dbUser.projects ?? [], // Ensure projects is always an array
+          projects: dbUser.projects ?? [],
         };
       }
       return session;
