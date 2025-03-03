@@ -24,7 +24,8 @@ const ViewClient = () => {
     const fetchProjectDetails = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch(`/api/projects/${params.project_name}`);
+        // const res = await fetch(`https://codeshare.space/api/projects/${params.project_name}`);
+        const res = await fetch(`https://codeshare.space/api/projects?pname=${params.project_name}`);
         const data = await res.json();
 
         if (!res.ok) {
