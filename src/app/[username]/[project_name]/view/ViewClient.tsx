@@ -1,28 +1,8 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import LoadingEditor from "../EditorLoading";
 import { useParams } from "next/navigation";
-
-// type Project = {
-//   project_name: string;
-//   project_description: string;
-//   files: {
-//     html: string;
-//     css: string;
-//     javascript: string;
-//   };
-// };
-
-// const fileTypeConfig = {
-//   html: { language: "html" },
-//   css: { language: "css" },
-//   js: { language: "javascript" },
-// };
-
-// type ShareClientProps = {
-//   project_name: string;
-// };
+import LoadingAnimation from "../WebsiteLoading";
 
 type File = {
   html: string;
@@ -31,7 +11,6 @@ type File = {
 };
 
 const ViewClient = () => {
-  // const [userProject, setUserProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fileContents, setFileContents] = useState<File>({
     html: "",
@@ -85,7 +64,7 @@ const ViewClient = () => {
   }, [fileContents]);
 
   if (isLoading) {
-    return <LoadingEditor />;
+    return <LoadingAnimation />;
   }
 
   return (

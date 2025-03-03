@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import LoadingEditor from "../EditorLoading";
 import { useParams } from "next/navigation";
+import LoadingAnimation from "../WebsiteLoading";
 
 // type Project = {
 //   project_name: string;
@@ -92,7 +92,7 @@ const WebsiteClient = () => {
   }, [fileContents]);
 
   if (isLoading) {
-    return <LoadingEditor />;
+    return <LoadingAnimation />;
   }
 
   console.log(combinedCode);
