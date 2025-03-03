@@ -3,7 +3,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
-  title: "CodeVault",
+  title: "CodeShare",
   description: "Created by Amar Pandey",
 };
 

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-const LoadingAnimation = () => {
+const EditorLoader = () => {
   // Array of colors for the particles
   const colors = ["#FF5C8D", "#4AB7FF", "#FFD166", "#06D6A0", "#9B5DE5"];
   
@@ -140,4 +140,4 @@ const LoadingAnimation = () => {
   );
 };
 
-export default LoadingAnimation;
+export default EditorLoader;

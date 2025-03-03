@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-const LoadingEditor = () => {
+const WebsiteLoader = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white">
       <motion.div
@@ -9,7 +9,7 @@ const LoadingEditor = () => {
         transition={{ duration: 1.5, repeat: Infinity }}
         className="text-xl font-mono bg-gray-800 px-4 py-2 rounded-lg shadow-lg"
       >
-        Loading Code Editor...
+        Loading Website...
       </motion.div>
       
       <div className="flex mt-4 space-x-2">
@@ -33,4 +33,4 @@ const LoadingEditor = () => {
   );
 };
 
-export default LoadingEditor;
+export default WebsiteLoader;

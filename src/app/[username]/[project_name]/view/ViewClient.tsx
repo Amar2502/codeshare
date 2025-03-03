@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import LoadingAnimation from "../WebsiteLoading";
+import WebsiteLoader from "../WebsiteLoader";
 
 type File = {
   html: string;
@@ -65,7 +65,7 @@ const ViewClient = () => {
   }, [fileContents]);
 
   if (isLoading) {
-    return <LoadingAnimation />;
+    return <WebsiteLoader />;
   }
 
   return (

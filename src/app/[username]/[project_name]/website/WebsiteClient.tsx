@@ -2,28 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import LoadingAnimation from "../WebsiteLoading";
-
-// type Project = {
-//   project_name: string;
-//   project_description: string;
-//   files: {
-//     html: string;
-//     css: string;
-//     javascript: string;
-//   };
-// };
-
-// const fileTypeConfig = {
-//   html: { language: "html" },
-//   css: { language: "css" },
-//   js: { language: "javascript" },
-// };
-
-// type ShareClientProps = {
-//   user_name: string;
-//   project_name: string;
-// };
+import WebsiteLoader from "../WebsiteLoader";
 
 type File = {
   html: string;
@@ -92,7 +71,7 @@ const WebsiteClient = () => {
   }, [fileContents]);
 
   if (isLoading) {
-    return <LoadingAnimation />;
+    return <WebsiteLoader />;
   }
 
   console.log(combinedCode);
