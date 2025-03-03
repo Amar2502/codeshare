@@ -138,6 +138,7 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                           placeholder="Enter project name"
                           className="mt-2 bg-[#232741] border-[#2C314E] text-white"
                           name="pname"
+                          required
                         />
                       </div>
                       <div>
@@ -148,6 +149,7 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                           placeholder="Enter project description"
                           className="mt-2 p-2 rounded-md w-full min-h-16 bg-[#232741] border-[#2C314E] text-white outline-none"
                           name="pdesc"
+                          required
                         />
                       </div>
                     </div>
