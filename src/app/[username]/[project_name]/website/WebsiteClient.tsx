@@ -83,7 +83,7 @@ const WebsiteClient = () => {
           title="preview"
           srcDoc={combinedCode}
           className="w-full h-full"
-          sandbox="allow-scripts"
+          sandbox="allow-scripts allow-same-origin allow-forms"
         />
 
         {/* Floating Ball */}
