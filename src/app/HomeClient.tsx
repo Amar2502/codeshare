@@ -131,7 +131,7 @@ export default function HomePage() {
           <div className="flex items-center space-x-2">
             <Code className="h-8 w-8 text-[#7C3AED]" />
             <span className="text-2xl font-bold">
-              Code<span className="text-[#A78BFA]">Vault</span>
+              Code<span className="text-[#A78BFA]">Share</span>
             </span>
           </div>
         </nav>

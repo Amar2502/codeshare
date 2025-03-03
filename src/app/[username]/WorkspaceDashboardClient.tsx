@@ -105,7 +105,7 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
             <div className="flex items-center space-x-2 text-white">
               <Code className="h-8 w-8 text-[#A78BFA]" />
               <span className="text-2xl font-bold">
-                Code<span className="text-[#A78BFA]">Vault</span>
+                Code<span className="text-[#A78BFA]">Share</span>
               </span>
             </div>
             <div className="flex items-center gap-4">
