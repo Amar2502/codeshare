@@ -96,6 +96,10 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
   const [viewMode, setViewMode] = useState<"editor" | "preview" | "split">("split");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
+  // New state variables for share functionality
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
+  const [socialLinks, setSocialLinks] = useState({});
 
   const router = useRouter();
   const params = useParams();
@@ -227,13 +231,22 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
     }
   };
 
+  // Enhanced share functionality
   const handleShareCode = async () => {
     const currentUrl = window.location.href;
-    const copyURL = currentUrl + "/" + "website";
-    navigator.clipboard.writeText(copyURL);
-    toast(`Share link copied successfully ${copyURL} `, {
-      style: { backgroundColor: "#29b3f2", color: "#1A1325" },
-    });
+    const shareUrl = currentUrl + "/website";
+    
+    // Prepare social media share URLs
+    const socialMediaLinks = {
+      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`Check out my web project: ${projectName}`)}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
+    };
+    
+    // Open share dialog
+    setShareDialogOpen(true);
+    setShareUrl(shareUrl);
+    setSocialLinks(socialMediaLinks);
   };
 
   const handleDownloadFile = async () => {
