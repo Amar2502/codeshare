@@ -93,14 +93,12 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
   const [projectDescription, setProjectDescription] = useState(
     userProject?.project_description || ""
   );
-  const [viewMode, setViewMode] = useState<"editor" | "preview" | "split">("split");
+  const [viewMode, setViewMode] = useState<"editor" | "preview" | "split">(
+    "split"
+  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
-  const [shareUrl, setShareUrl] = useState("");
-  const [socialLinks, setSocialLinks] = useState({});
-  /* eslint-enable @typescript-eslint/no-unused-vars */
+
   const router = useRouter();
   const params = useParams();
 
@@ -133,7 +131,11 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
 
       try {
         setIsLoading(true);
-        const res = await fetch(`/api/projects?pname=${encodeURIComponent(params.project_name as string)}`);
+        const res = await fetch(
+          `/api/projects?pname=${encodeURIComponent(
+            params.project_name as string
+          )}`
+        );
         const data = await res.json();
 
         if (!res.ok) {
@@ -231,22 +233,13 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
     }
   };
 
-  // Enhanced share functionality
   const handleShareCode = async () => {
     const currentUrl = window.location.href;
-    const shareUrl = currentUrl + "/website";
-    
-    // Prepare social media share URLs
-    const socialMediaLinks = {
-      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`Check out my web project: ${projectName}`)}`,
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
-      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
-    };
-    
-    // Open share dialog
-    setShareDialogOpen(true);
-    setShareUrl(shareUrl);
-    setSocialLinks(socialMediaLinks);
+    const copyURL = currentUrl + "/" + "website";
+    navigator.clipboard.writeText(copyURL);
+    toast(`Share link copied successfully ${copyURL} `, {
+      style: { backgroundColor: "#29b3f2", color: "#1A1325" },
+    });
   };
 
   const handleDownloadFile = async () => {
@@ -349,7 +342,11 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
 
   // Mobile Menu
   const MobileMenu = () => (
-    <div className={`fixed inset-0 bg-gray-900 bg-opacity-90 z-50 ${isMobileMenuOpen ? "block" : "hidden"}`}>
+    <div
+      className={`fixed inset-0 bg-gray-900 bg-opacity-90 z-50 ${
+        isMobileMenuOpen ? "block" : "hidden"
+      }`}
+    >
       <div className="flex flex-col h-full">
         <div className="p-4 flex justify-between items-center border-b border-gray-700">
           <h2 className="text-white font-semibold">{projectName}</h2>
@@ -477,7 +474,9 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
           className={cn(
             "bg-gray-800 border-r border-gray-700 transition-all duration-300 hidden md:flex md:flex-col",
             isSidebarOpen ? "md:w-44 lg:w-48" : "md:w-14",
-            isMobileView && isSidebarOpen && "!fixed inset-y-0 left-0 z-40 flex flex-col w-64"
+            isMobileView &&
+              isSidebarOpen &&
+              "!fixed inset-y-0 left-0 z-40 flex flex-col w-64"
           )}
         >
           {/* Sidebar Header */}
@@ -546,7 +545,12 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
               </div>
 
               {/* View Mode Buttons - Only visible when sidebar is open */}
-              <div className={cn("pt-4 mt-4 border-t border-gray-700", !isSidebarOpen && "hidden")}>
+              <div
+                className={cn(
+                  "pt-4 mt-4 border-t border-gray-700",
+                  !isSidebarOpen && "hidden"
+                )}
+              >
                 <h2 className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
                   View Mode
                 </h2>
@@ -673,41 +677,92 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
               {/* Mobile dropdown for actions */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild className="md:hidden">
-                  <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-300">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 text-gray-300"
+                  >
                     <Settings className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-gray-800 border-gray-700 text-white">
-                  {actionButtons.map(({ icon: Icon, action, label }) => (
-                    <DropdownMenuItem
-                      key={`dropdown-${label}`}
-                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-700"
-                      onClick={action}
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span>{label}</span>
-                    </DropdownMenuItem>
-                  ))}
+                  {actionButtons.map(({ icon: Icon, action, label }) =>
+                    label === "Share Project" ? (
+                      <Dialog key={`dropdown-${label}`}>
+                        <DialogTrigger asChild>
+                          <DropdownMenuItem className="flex items-center gap-2 cursor-pointer hover:bg-gray-700">
+                            <Icon className="h-4 w-4" />
+                            <span>{label}</span>
+                          </DropdownMenuItem>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Share Project</DialogTitle>
+                            <DialogDescription>
+                              Share your project with teammates or make it
+                              public.
+                            </DialogDescription>
+                          </DialogHeader>
+                        </DialogContent>
+                      </Dialog>
+                    ) : (
+                      <DropdownMenuItem
+                        key={`dropdown-${label}`}
+                        className="flex items-center gap-2 cursor-pointer hover:bg-gray-700"
+                        onClick={action}
+                      >
+                        <Icon className="h-4 w-4" />
+                        <span>{label}</span>
+                      </DropdownMenuItem>
+                    )
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
 
               {/* Desktop action buttons */}
               <div className="hidden md:flex items-center gap-1">
-                {actionButtons.map(({ icon: Icon, action, label, hover }) => (
-                  <Tooltip key={`nav-${label}`}>
-                    <TooltipTrigger asChild>
-                      <Button
-                        onClick={action}
-                        variant="ghost"
-                        size="icon"
-                        className={`h-9 w-9 text-gray-300 ${hover}`}
-                      >
-                        <Icon className="h-5 w-5" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>{label}</TooltipContent>
-                  </Tooltip>
-                ))}
+                {actionButtons.map(({ icon: Icon, action, label, hover }) =>
+                  label === "Share Project" ? (
+                    <Dialog key={`nav-${label}`}>
+                      <DialogTrigger asChild>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={`h-9 w-9 text-gray-300 ${hover}`}
+                            >
+                              <Icon className="h-5 w-5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{label}</TooltipContent>
+                        </Tooltip>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-md bg-gray-900 text-white border border-gray-700">
+                        <DialogHeader>
+                          <DialogTitle>Share Project</DialogTitle>
+                          <DialogDescription>
+                            Share your project with teammates or make it public.
+                          </DialogDescription>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
+                  ) : (
+                    <Tooltip key={`nav-${label}`}>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onClick={action}
+                          variant="ghost"
+                          size="icon"
+                          className={`h-9 w-9 text-gray-300 ${hover}`}
+                        >
+                          <Icon className="h-5 w-5" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{label}</TooltipContent>
+                    </Tooltip>
+                  )
+                )}
               </div>
 
               {/* Settings Dialog Trigger */}
