@@ -266,6 +266,14 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
     });
   };
 
+  const handleViewInNewTab = () => {
+    window.open(`${window.location.pathname}/view`, "_blank");
+  };
+
+  const handleNavigateToDashboard = () => {
+    router.push(`/${params.username}`);
+  };
+
   const handleProjectDetailSave = async () => {
     try {
       const res = await fetch("/api/saveProjectDetails", {
@@ -305,40 +313,6 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
       setIsSidebarOpen(false);
     }
   };
-
-  // Common action buttons
-  const actionButtons = [
-    {
-      icon: Save,
-      action: handleSaveChanges,
-      label: "Save Project",
-      hover: "hover:text-green-500",
-    },
-    {
-      icon: Share,
-      action: handleShareCode,
-      label: "Share Project",
-      hover: "hover:text-blue-500",
-    },
-    {
-      icon: Download,
-      action: handleDownloadFile,
-      label: "Download Files",
-      hover: "hover:text-red-500",
-    },
-    {
-      icon: PlayCircle,
-      action: () => window.open(`${window.location.pathname}/view`, "_blank"),
-      label: "View in New Tab",
-      hover: "hover:text-green-500",
-    },
-    {
-      icon: StepBack,
-      action: () => router.push(`/${params.username}`),
-      label: "Dashboard",
-      hover: "hover:text-blue-500",
-    },
-  ];
 
   // Mobile Menu
   const MobileMenu = () => (
@@ -441,20 +415,70 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
             <div className="space-y-2">
               <h3 className="text-gray-300 text-sm font-medium">Actions</h3>
               <div className="space-y-2">
-                {actionButtons.map(({ icon: Icon, action, label }) => (
-                  <Button
-                    key={`mobile-action-${label}`}
-                    variant="ghost"
-                    className="flex items-center justify-start gap-3 w-full text-gray-300 hover:text-white hover:bg-gray-700"
-                    onClick={() => {
-                      action();
-                      setIsMobileMenuOpen(false);
-                    }}
-                  >
-                    <Icon className="h-4 w-4" />
-                    <span>{label}</span>
-                  </Button>
-                ))}
+                {/* Save Button */}
+                <Button
+                  variant="ghost"
+                  className="flex items-center justify-start gap-3 w-full text-gray-300 hover:text-white hover:bg-gray-700"
+                  onClick={() => {
+                    handleSaveChanges();
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  <Save className="h-4 w-4" />
+                  <span>Save Project</span>
+                </Button>
+                
+                {/* Share Button */}
+                <Button
+                  variant="ghost"
+                  className="flex items-center justify-start gap-3 w-full text-gray-300 hover:text-white hover:bg-gray-700"
+                  onClick={() => {
+                    handleShareCode();
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  <Share className="h-4 w-4" />
+                  <span>Share Project</span>
+                </Button>
+                
+                {/* Download Button */}
+                <Button
+                  variant="ghost"
+                  className="flex items-center justify-start gap-3 w-full text-gray-300 hover:text-white hover:bg-gray-700"
+                  onClick={() => {
+                    handleDownloadFile();
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  <Download className="h-4 w-4" />
+                  <span>Download Files</span>
+                </Button>
+                
+                {/* View in New Tab Button */}
+                <Button
+                  variant="ghost"
+                  className="flex items-center justify-start gap-3 w-full text-gray-300 hover:text-white hover:bg-gray-700"
+                  onClick={() => {
+                    handleViewInNewTab();
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  <PlayCircle className="h-4 w-4" />
+                  <span>View in New Tab</span>
+                </Button>
+                
+                {/* Dashboard Button */}
+                <Button
+                  variant="ghost"
+                  className="flex items-center justify-start gap-3 w-full text-gray-300 hover:text-white hover:bg-gray-700"
+                  onClick={() => {
+                    handleNavigateToDashboard();
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  <StepBack className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </Button>
               </div>
             </div>
           </div>
@@ -686,215 +710,275 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-gray-800 border-gray-700 text-white">
-                  {actionButtons.map(({ icon: Icon, action, label }) =>
-                    label === "Share Project" ? (
-                      <Dialog key={`dropdown-${label}`}>
-                        <DialogTrigger asChild>
-                          <DropdownMenuItem className="flex items-center gap-2 cursor-pointer hover:bg-gray-700">
-                            <Icon className="h-4 w-4" />
-                            <span>{label}</span>
-                          </DropdownMenuItem>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Share Project</DialogTitle>
-                            <DialogDescription>
-                              Share your project with teammates or make it
-                              public.
-                            </DialogDescription>
-                          </DialogHeader>
-                        </DialogContent>
-                      </Dialog>
-                    ) : (
-                      <DropdownMenuItem
-                        key={`dropdown-${label}`}
-                        className="flex items-center gap-2 cursor-pointer hover:bg-gray-700"
-                        onClick={action}
-                      >
-                        <Icon className="h-4 w-4" />
-                        <span>{label}</span>
+                  {/* Save Project */}
+                  <DropdownMenuItem
+                    className="flex items-center gap-2 cursor-pointer hover:bg-gray-700"
+                    onClick={handleSaveChanges}
+                  >
+                    <Save className="h-4 w-4" />
+                    <span>Save Project</span>
+                  </DropdownMenuItem>
+
+                  {/* Share Project */}
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <DropdownMenuItem className="flex items-center gap-2 cursor-pointer hover:bg-gray-700">
+                        <Share className="h-4 w-4" />
+                        <span>Share Project</span>
                       </DropdownMenuItem>
-                    )
-                  )}
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Share Project</DialogTitle>
+                        <DialogDescription>
+                          Share your project with teammates or make it
+                          public.
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+
+                  {/* Download Files */}
+                  <DropdownMenuItem
+                    className="flex items-center gap-2 cursor-pointer hover:bg-gray-700"
+                    onClick={handleDownloadFile}
+                  >
+                    <Download className="h-4 w-4" />
+                    <span>Download Files</span>
+                  </DropdownMenuItem>
+
+                  {/* View in New Tab */}
+                  <DropdownMenuItem
+                    className="flex items-center gap-2 cursor-pointer hover:bg-gray-700"
+                    onClick={handleViewInNewTab}
+                  >
+                    <PlayCircle className="h-4 w-4" />
+                    <span>View in New Tab</span>
+                  </DropdownMenuItem>
+
+                  {/* Dashboard */}
+                  <DropdownMenuItem
+                    className="flex items-center gap-2 cursor-pointer hover:bg-gray-700"
+                    onClick={handleNavigateToDashboard}
+                  >
+                    <StepBack className="h-4 w-4" />
+                    <span>Dashboard</span>
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
               {/* Desktop action buttons */}
               <div className="hidden md:flex items-center gap-1">
-                {actionButtons.map(({ icon: Icon, action, label, hover }) =>
-                  label === "Share Project" ? (
-                    <Dialog key={`nav-${label}`}>
-                      <DialogTrigger asChild>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className={`h-9 w-9 text-gray-300 ${hover}`}
-                            >
-                              <Icon className="h-5 w-5" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>{label}</TooltipContent>
-                        </Tooltip>
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-md bg-gray-900 text-white border border-gray-700">
-                        <DialogHeader>
-                          <DialogTitle>Share Project</DialogTitle>
-                          <DialogDescription>
-                            Share your project with teammates or make it public.
-                          </DialogDescription>
-                        </DialogHeader>
-                      </DialogContent>
-                    </Dialog>
-                  ) : (
-                    <Tooltip key={`nav-${label}`}>
+                {/* Save Button */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={handleSaveChanges}
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 text-gray-300 hover:text-green-500"
+                    >
+                      <Save className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Save Project</TooltipContent>
+                </Tooltip>
+
+                {/* Share Button */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
-                          onClick={action}
                           variant="ghost"
                           size="icon"
-                          className={`h-9 w-9 text-gray-300 ${hover}`}
+                          className="h-9 w-9 text-gray-300 hover:text-blue-500"
                         >
-                          <Icon className="h-5 w-5" />
+                          <Share className="h-5 w-5" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>{label}</TooltipContent>
+                      <TooltipContent>Share Project</TooltipContent>
                     </Tooltip>
-                  )
-                )}
-              </div>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md bg-gray-900 text-white border border-gray-700">
+                    <DialogHeader>
+                      <DialogTitle>Share Project</DialogTitle>
+                      <DialogDescription>
+                        Share your project with teammates or make it public.
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
 
-              {/* Settings Dialog Trigger */}
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-gray-300 hover:text-white hidden md:flex"
-                  >
-                    <Settings className="h-5 w-5" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md bg-gray-900 text-white border border-gray-700">
-                  <DialogHeader>
-                    <DialogTitle className="text-lg font-semibold">
-                      Edit Project Details
-                    </DialogTitle>
-                    <DialogDescription className="text-gray-400">
-                      Update your project name and description.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium text-gray-300">
-                        Project Name
-                      </label>
-                      <Input
-                        className="mt-1 bg-gray-800 text-white border-gray-700 focus:ring-gray-500"
-                        value={projectName}
-                        onChange={(e) => setProjectName(e.target.value)}
-                        placeholder="Enter project name"
-                        required={true}
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-300">
-                        Project Description
-                      </label>
-                      <textarea
-                        className="mt-1 w-full h-24 bg-gray-800 text-white border border-gray-700 rounded-md p-2 focus:ring-gray-500"
-                        value={projectDescription}
-                        onChange={(e) => setProjectDescription(e.target.value)}
-                        placeholder="Enter project description"
-                        required={true}
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter className="flex justify-end space-x-2">
-                    <Button className="border-gray-600 text-gray-300 hover:text-white">
-                      Cancel
-                    </Button>
+                {/* Download Button */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
                     <Button
-                      className="bg-gray-700 hover:bg-blue-500 text-white"
-                      onClick={handleProjectDetailSave}
+                      onClick={handleDownloadFile}
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 text-gray-300 hover:text-red-500"
                     >
-                      Change
+                      <Download className="h-5 w-5" />
                     </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+                  </TooltipTrigger>
+                  <TooltipContent>Download Files</TooltipContent>
+                </Tooltip>
+
+                {/* View in New Tab Button */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={handleViewInNewTab}
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 text-gray-300 hover:text-green-500"
+                    >
+                      <PlayCircle className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>View in New Tab</TooltipContent>
+                </Tooltip>
+
+                {/* Dashboard Button */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={handleNavigateToDashboard}
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 text-gray-300 hover:text-yellow-500"
+                    >
+                      <StepBack className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Return to Dashboard</TooltipContent>
+                </Tooltip>
+
+                {/* Settings Button */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-9 w-9 text-gray-300 hover:text-purple-500"
+                        >
+                          <Settings className="h-5 w-5" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Project Settings</TooltipContent>
+                    </Tooltip>
+                  </DialogTrigger>
+                  <DialogContent className="bg-gray-900 text-white border border-gray-700">
+                    <DialogHeader>
+                      <DialogTitle>Project Settings</DialogTitle>
+                      <DialogDescription>
+                        Update your project details
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid gap-2">
+                        <label htmlFor="projectName" className="text-sm">
+                          Project Name
+                        </label>
+                        <Input
+                          id="projectName"
+                          value={projectName}
+                          onChange={(e) => setProjectName(e.target.value)}
+                          className="bg-gray-800 border-gray-700 text-white"
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <label htmlFor="projectDescription" className="text-sm">
+                          Description
+                        </label>
+                        <Input
+                          id="projectDescription"
+                          value={projectDescription}
+                          onChange={(e) => setProjectDescription(e.target.value)}
+                          className="bg-gray-800 border-gray-700 text-white"
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button onClick={handleProjectDetailSave} className="bg-purple-600 hover:bg-purple-700 text-white">
+                        Save Changes
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
           </div>
 
-          {/* Editor and Preview */}
-          <div className="flex-1">
-            {viewMode === "split" && !isMobileView ? (
-              <ResizablePanelGroup direction="horizontal">
-                <ResizablePanel defaultSize={55}>
-                  <div className="h-[calc(100vh-3.5rem)] relative bg-gray-200">
-                    <div className="absolute inset-0">
-                      <Editor
-                        height="100%"
-                        language={fileTypeConfig[activeFile].language}
-                        theme="vs-dark"
-                        value={fileContents[activeFile]}
-                        onChange={handleCodeChange}
-                        options={{
-                          minimap: { enabled: false },
-                          fontSize: 14,
-                          wordWrap: "on",
-                          padding: { top: 16 },
-                          scrollbar: { verticalScrollbarSize: 8 },
-                        }}
-                      />
-                    </div>
+          {/* Editor and Preview Area */}
+          <div className="flex-1 overflow-hidden">
+            {viewMode === "split" ? (
+              <ResizablePanelGroup
+                direction="horizontal"
+                className="min-h-0 h-full"
+              >
+                <ResizablePanel defaultSize={50} minSize={20}>
+                  <div className="h-full">
+                    <Editor
+                      height="100%"
+                      defaultLanguage={fileTypeConfig[activeFile].language}
+                      language={fileTypeConfig[activeFile].language}
+                      theme="vs-dark"
+                      value={fileContents[activeFile]}
+                      onChange={handleCodeChange}
+                      options={{
+                        minimap: { enabled: false },
+                        fontSize: 14,
+                        wordWrap: "on",
+                        scrollBeyondLastLine: false,
+                        lineNumbers: "on",
+                        tabSize: 2,
+                      }}
+                    />
                   </div>
                 </ResizablePanel>
-                <ResizableHandle className="bg-gray-700 w-px" />
-                <ResizablePanel defaultSize={45}>
-                  <div className="h-[calc(100vh-3.5rem)] bg-white">
+                <ResizableHandle withHandle />
+                <ResizablePanel defaultSize={50} minSize={20}>
+                  <div className="h-full bg-white">
                     <iframe
-                      title="preview"
                       srcDoc={combinedCode}
-                      className="w-full h-full"
-                      sandbox="allow-scripts allow-same-origin allow-forms"
+                      title="preview"
+                      className="w-full h-full border-none"
+                      sandbox="allow-scripts"
                     />
                   </div>
                 </ResizablePanel>
               </ResizablePanelGroup>
+            ) : viewMode === "editor" ? (
+              <div className="h-full">
+                <Editor
+                  height="100%"
+                  defaultLanguage={fileTypeConfig[activeFile].language}
+                  language={fileTypeConfig[activeFile].language}
+                  theme="vs-dark"
+                  value={fileContents[activeFile]}
+                  onChange={handleCodeChange}
+                  options={{
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    wordWrap: "on",
+                    scrollBeyondLastLine: false,
+                    lineNumbers: "on",
+                    tabSize: 2,
+                  }}
+                />
+              </div>
             ) : (
-              <div className="h-[calc(100vh-3.5rem)]">
-                {viewMode === "editor" ? (
-                  <div className="h-full relative bg-gray-200">
-                    <div className="absolute inset-0">
-                      <Editor
-                        height="100%"
-                        language={fileTypeConfig[activeFile].language}
-                        theme="vs-dark"
-                        value={fileContents[activeFile]}
-                        onChange={handleCodeChange}
-                        options={{
-                          minimap: { enabled: false },
-                          fontSize: 14,
-                          wordWrap: "on",
-                          padding: { top: 16 },
-                          scrollbar: { verticalScrollbarSize: 8 },
-                          automaticLayout: true,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="h-full bg-white">
-                    <iframe
-                      title="preview"
-                      srcDoc={combinedCode}
-                      className="w-full h-full"
-                      sandbox="allow-scripts allow-same-origin allow-forms"
-                    />
-                  </div>
-                )}
+              <div className="h-full bg-white">
+                <iframe
+                  srcDoc={combinedCode}
+                  title="preview"
+                  className="w-full h-full border-none"
+                  sandbox="allow-scripts"
+                />
               </div>
             )}
           </div>
