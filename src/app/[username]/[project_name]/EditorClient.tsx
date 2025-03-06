@@ -101,6 +101,7 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
 
   const router = useRouter();
   const params = useParams();
@@ -243,6 +244,12 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
     toast(`Share link copied successfully ${copyURL} `, {
       style: { backgroundColor: "#29b3f2", color: "#1A1325" },
     });
+  };
+
+  const copyToClipboard = (link: string, type: "website" | "code"): void => {
+    navigator.clipboard.writeText(link);
+    setCopied(type);
+    setTimeout(() => setCopied(null), 2000); // Reset message after 2s
   };
 
   const handleDownloadFile = async () => {
@@ -785,8 +792,8 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                   </TooltipTrigger>
                   <TooltipContent>Save Project</TooltipContent>
                 </Tooltip>
-                {/* Share Button */}
 
+                {/* Share Button */}
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button
@@ -797,32 +804,78 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                       <Share className="h-5 w-5" />
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-md">
+                  <DialogContent className="sm:max-w-md bg-gray-900 text-white border border-gray-700">
                     <DialogHeader>
-                      <DialogTitle>Share link</DialogTitle>
-                      <DialogDescription>
-                        Anyone who has this link will be able to view this.
+                      <DialogTitle className="text-gray-100">
+                        Share Link
+                      </DialogTitle>
+                      <DialogDescription className="text-gray-400">
+                        Anyone with these links can view your website or its
+                        source code.
                       </DialogDescription>
                     </DialogHeader>
+
+                    {/* Website-only Link */}
                     <div className="flex items-center space-x-2">
                       <div className="grid flex-1 gap-2">
-                        <Label htmlFor="link" className="sr-only">
-                          Link
+                        <Label htmlFor="website-link" className="sr-only">
+                          Website Link
                         </Label>
                         <Input
-                          id="link"
-                          defaultValue="https://ui.shadcn.com/docs/installation"
+                          id="website-link"
+                          value={`https://codeshare.space/${params.username}/${params.project_name}/view`}
                           readOnly
+                          className="bg-gray-800 text-gray-300 border-gray-700"
                         />
                       </div>
-                      <Button type="submit" size="sm" className="px-3">
-                        <span className="sr-only">Copy</span>
-                        <Copy />
+                      <Button
+                        size="sm"
+                        className="px-3 bg-gray-700 hover:bg-gray-600"
+                        onClick={() => copyToClipboard(`https://codeshare.space/${params.username}/${params.project_name}/view`, "website")}
+                      >
+                        <Copy className="h-4 w-4" />
                       </Button>
                     </div>
+                    {copied === "website" && (
+                      <p className="text-green-400 text-sm mt-1">
+                        Copied website link!
+                      </p>
+                    )}
+
+                    {/* Website + Code Link */}
+                    <div className="flex items-center space-x-2 mt-3">
+                      <div className="grid flex-1 gap-2">
+                        <Label htmlFor="code-link" className="sr-only">
+                          Website & Code Link
+                        </Label>
+                        <Input
+                          id="code-link"
+                          value={`https://codeshare.space/${params.username}/${params.project_name}/view`}
+                          readOnly
+                          className="bg-gray-800 text-gray-300 border-gray-700"
+                        />
+                      </div>
+                      <Button
+                        size="sm"
+                        className="px-3 bg-gray-700 hover:bg-gray-600"
+                        onClick={() => copyToClipboard(`https://codeshare.space/${params.username}/${params.project_name}/view`, "code")}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    {copied === "code" && (
+                      <p className="text-green-400 text-sm mt-1">
+                        Copied website & code link!
+                      </p>
+                    )}
+
                     <DialogFooter className="sm:justify-start">
                       <DialogClose asChild>
-                        <Button type="button" variant="secondary">
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          className="bg-gray-700 hover:bg-gray-600 text-white"
+                        >
                           Close
                         </Button>
                       </DialogClose>
