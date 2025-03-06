@@ -96,11 +96,11 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
   const [viewMode, setViewMode] = useState<"editor" | "preview" | "split">("split");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
-  // New state variables for share functionality
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const [socialLinks, setSocialLinks] = useState({});
-
+  /* eslint-enable @typescript-eslint/no-unused-vars */
   const router = useRouter();
   const params = useParams();
 
