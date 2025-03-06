@@ -38,6 +38,8 @@ const CodeClient: React.FC = () => {
         );
 
         const data = await res.json();
+        console.log(data.project.files);
+        
 
         if (!res.ok) {
           throw new Error(data.error || "Failed to fetch project details");
