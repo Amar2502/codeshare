@@ -32,7 +32,9 @@ const CodeClient: React.FC = () => {
       try {
         setIsLoading(true);
         const res = await fetch(
-          `/api/shareproject?user_name=${params.username}&project_name=${encodeURIComponent(params.project_name)}`
+          `/api/shareproject?user_name=${
+            params.username
+          }&project_name=${encodeURIComponent(params.project_name)}`
         );
 
         const data = await res.json();
@@ -119,7 +121,9 @@ const CodeClient: React.FC = () => {
             <button
               key={name}
               className={`flex items-center space-x-2 px-4 py-2 rounded text-white transition-all ${
-                activeTab === name ? "bg-blue-500" : "bg-gray-700 hover:bg-gray-600"
+                activeTab === name
+                  ? "bg-blue-500"
+                  : "bg-gray-700 hover:bg-gray-600"
               }`}
               onClick={() => setActiveTab(name as keyof FileContents)}
             >
@@ -148,7 +152,12 @@ const CodeClient: React.FC = () => {
 
       <ResizablePanelGroup direction="horizontal" className="h-screen w-full">
         {/* Code Editor Panel */}
-        <ResizablePanel defaultSize={50} minSize={30} maxSize={60} className="bg-gray-900">
+        <ResizablePanel
+          defaultSize={50}
+          minSize={30}
+          maxSize={60}
+          className="bg-gray-900"
+        >
           <Editor
             height="100%"
             language={activeTab}
@@ -166,15 +175,31 @@ const CodeClient: React.FC = () => {
         </ResizablePanel>
 
         {/* Live Preview Panel */}
-        <ResizablePanel defaultSize={50} minSize={30} maxSize={60} className="relative">
+        <ResizablePanel
+          defaultSize={50}
+          minSize={30}
+          maxSize={60}
+          className="relative"
+        >
           <iframe
             title="preview"
             srcDoc={combinedCode}
-            className="w-full h-full border-none"
+            className="w-full h-full"
             sandbox="allow-scripts allow-same-origin allow-forms"
           />
         </ResizablePanel>
       </ResizablePanelGroup>
+      {/* Floating Ball */}
+      <div className="fixed bottom-6 right-6 group">
+        <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center shadow-lg cursor-pointer relative transition-all duration-300 hover:scale-110">
+          <span className="text-white text-xl font-bold">⚡</span>
+
+          {/* Tooltip (now on the left) */}
+          <div className="absolute right-full mr-3 w-max px-3 py-1 text-sm bg-gray-900 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            Powered by CodeVault
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
