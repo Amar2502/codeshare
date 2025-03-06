@@ -244,9 +244,6 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                   <p className="text-sm text-gray-400 mb-4 line-clamp-2 truncate overflow-hidden whitespace-nowrap">
                     {project.project_description}
                   </p>
-                  <div className="text-xs text-gray-500">
-                    Last modified: Date
-                  </div>
                 </div>
               </Link>
             ))}
@@ -257,12 +254,9 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
   ) : (
     <div className="bg-backgroundcolor flex items-center justify-center h-screen text-center text-gray-300 px-4">
       <div className="bg-gray-900 p-10 rounded-2xl shadow-xl w-full max-w-md flex flex-col justify-center items-center">
-        <h2 className="text-4xl font-extrabold text-white">
-          No Projects Found
-        </h2>
-        <p className="text-gray-400 mt-4 text-lg">
+        <h2 className="text-gray-400 mt-4 text-lg">
           Kickstart your journey by creating your first project!
-        </p>
+        </h2>
         <Dialog>
           <DialogTrigger className="mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-5 py-3 rounded-xl flex items-center gap-3 hover:opacity-90 transition-all duration-300 shadow-lg cursor-pointer">
             <Plus size={22} />

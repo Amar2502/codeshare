@@ -71,21 +71,18 @@ export default function HomePage() {
       description: "A responsive portfolio website with dark mode",
       image: "/placeholder-portfolio.png",
       sharelink: "https://codeshare.space/amar/Portfolio_Template/website",
-      author: "Alex Mercer",
     },
     {
       title: "Todo App",
       description: "Interactive task manager with local storage",
       image: "/placeholder-todo.png",
       sharelink: "https://codeshare.space/amar/Todo_App/website",
-      author: "Jamie Wong",
     },
     {
       title: "Landing Page",
       description: "Modern landing page with animations",
       image: "/placeholder-landing.png",
       sharelink: "https://codeshare.space/amar/Landing_Page/website",
-      author: "Sophia Garcia",
     },
   ];
 
@@ -372,9 +369,6 @@ export default function HomePage() {
                     <h3 className="text-xl font-bold mb-2">{project.title}</h3>
                     <p className="text-[#A1AFCF] mb-4 flex-1">{project.description}</p>
                     <div className="flex justify-between items-center mt-auto">
-                      <p className="text-[#8896BF] text-sm">
-                        By {project.author}
-                      </p>
                       <Link href={`${project.sharelink}`} passHref>
                         <motion.div
                           className="text-[#A78BFA] hover:text-[#C4B5FD] font-medium flex items-center group"
