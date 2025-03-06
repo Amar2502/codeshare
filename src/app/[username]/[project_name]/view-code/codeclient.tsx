@@ -32,19 +32,19 @@ const CodeClient: React.FC = () => {
       try {
         setIsLoading(true);
         const res = await fetch(
-          `/api/shareproject?user_name=${
-            params.username
-          }&project_name=${encodeURIComponent(params.project_name)}`
+          `/api/shareproject?user_name=${params.username}&project_name=${encodeURIComponent(
+            params.project_name as string
+          )}`
         );
 
         const data = await res.json();
-        console.log(data.project.files);
-        
+        console.log(data);
 
         if (!res.ok) {
           throw new Error(data.error || "Failed to fetch project details");
         }
 
+        // setUserProject(data.project);
         setFileContents({
           html: data.project.files.html || "",
           css: data.project.files.css || "",
@@ -60,20 +60,20 @@ const CodeClient: React.FC = () => {
     fetchProjectDetails();
   }, [params.project_name, params.username]);
 
-  const combinedCode = useMemo(() => {
+const combinedCode = useMemo(() => {
     const { html, css, javascript } = fileContents;
     return `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <style>${css}</style>
-        </head>
-        <body>
-          ${html.replace(/<!DOCTYPE html>|<\/?.*?>/g, "")}
-          <script>${javascript}<\/script>
-        </body>
-      </html>
-    `;
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <style>${css}</style>
+              </head>
+              <body>
+                ${html.replace(/<!DOCTYPE html>|<\/?html>|<\/?body>/g, "")}
+                <script>${javascript}</script>
+              </body>
+            </html>
+          `;
   }, [fileContents]);
 
   const handleDownloadFile = async () => {
@@ -103,6 +103,8 @@ const CodeClient: React.FC = () => {
   if (isLoading) {
     return <WebsiteLoader />;
   }
+
+  console.log(combinedCode);
 
   return (
     <div className="h-screen w-screen flex">
