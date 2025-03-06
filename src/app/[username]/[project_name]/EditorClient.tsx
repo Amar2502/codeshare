@@ -25,6 +25,7 @@ import {
   Menu,
   X,
   Copy,
+  Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -807,69 +808,82 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                   <DialogContent className="sm:max-w-md bg-gray-900 text-white border border-gray-700">
                     <DialogHeader>
                       <DialogTitle className="text-gray-100">
-                        Share Link
+                        Share Project
                       </DialogTitle>
                       <DialogDescription className="text-gray-400">
-                        Anyone with these links can view your website or its
-                        source code.
+                        Choose the link you want to share.
                       </DialogDescription>
                     </DialogHeader>
 
                     {/* Website-only Link */}
-                    <div className="flex items-center space-x-2">
-                      <div className="grid flex-1 gap-2">
-                        <Label htmlFor="website-link" className="sr-only">
-                          Website Link
-                        </Label>
-                        <Input
-                          id="website-link"
-                          value={`https://codeshare.space/${params.username}/${params.project_name}/view`}
-                          readOnly
-                          className="bg-gray-800 text-gray-300 border-gray-700"
-                        />
-                      </div>
-                      <Button
-                        size="sm"
-                        className="px-3 bg-gray-700 hover:bg-gray-600"
-                        onClick={() => copyToClipboard(`https://codeshare.space/${params.username}/${params.project_name}/view`, "website")}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    {copied === "website" && (
-                      <p className="text-green-400 text-sm mt-1">
-                        Copied website link!
+                    <div>
+                      <p className="flex items-center text-sm font-semibold text-gray-200">
+                        <Globe className="h-4 w-4 mr-2" /> Website Link
                       </p>
-                    )}
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="grid flex-1 gap-2">
+                          <Label htmlFor="website-link" className="sr-only">
+                            Website Link
+                          </Label>
+                          <Input
+                            id="website-link"
+                            value={`https://codeshare.space/${params.username}/${params.project_name}/view-website`}
+                            readOnly
+                            className="bg-gray-800 text-gray-300 border-gray-700"
+                          />
+                        </div>
+                        <Button
+                          size="sm"
+                          className="px-3 bg-gray-700 hover:bg-gray-600"
+                          onClick={() =>
+                            copyToClipboard(`https://codeshare.space/${params.username}/${params.project_name}/view-website`, "website")
+                          }
+                          aria-label="Copy Website Link"
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      {copied === "website" && (
+                        <p className="text-green-400 text-sm mt-1">
+                          Copied website link!
+                        </p>
+                      )}
+                    </div>
 
                     {/* Website + Code Link */}
-                    <div className="flex items-center space-x-2 mt-3">
-                      <div className="grid flex-1 gap-2">
-                        <Label htmlFor="code-link" className="sr-only">
-                          Website & Code Link
-                        </Label>
-                        <Input
-                          id="code-link"
-                          value={`https://codeshare.space/${params.username}/${params.project_name}/view`}
-                          readOnly
-                          className="bg-gray-800 text-gray-300 border-gray-700"
-                        />
-                      </div>
-                      <Button
-                        size="sm"
-                        className="px-3 bg-gray-700 hover:bg-gray-600"
-                        onClick={() => copyToClipboard(`https://codeshare.space/${params.username}/${params.project_name}/view`, "code")}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    {copied === "code" && (
-                      <p className="text-green-400 text-sm mt-1">
-                        Copied website & code link!
+                    <div className="mt-4">
+                      <p className="flex items-center text-sm font-semibold text-gray-200">
+                        <Code className="h-4 w-4 mr-2" /> Website & Code Link
                       </p>
-                    )}
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="grid flex-1 gap-2">
+                          <Label htmlFor="code-link" className="sr-only">
+                            Website & Code Link
+                          </Label>
+                          <Input
+                            id="code-link"
+                            value={`https://codeshare.space/${params.username}/${params.project_name}/view-code`}
+                            readOnly
+                            className="bg-gray-800 text-gray-300 border-gray-700"
+                          />
+                        </div>
+                        <Button
+                          size="sm"
+                          className="px-3 bg-gray-700 hover:bg-gray-600"
+                          onClick={() => copyToClipboard(`https://codeshare.space/${params.username}/${params.project_name}/view-code`, "code")}
+                          aria-label="Copy Code & Website Link"
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      {copied === "code" && (
+                        <p className="text-green-400 text-sm mt-1">
+                          Copied website & code link!
+                        </p>
+                      )}
+                    </div>
 
-                    <DialogFooter className="sm:justify-start">
+                    <DialogFooter className="sm:justify-start mt-4">
                       <DialogClose asChild>
                         <Button
                           type="button"
