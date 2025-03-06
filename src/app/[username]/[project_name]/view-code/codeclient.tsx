@@ -2,12 +2,12 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import Editor from "@monaco-editor/react";
 import WebsiteLoader from "../WebsiteLoader";
 import JSZip from "jszip";
 import { toast } from "sonner";
-import { Menu, X, FileText, FileCode, FileJson } from "lucide-react";
+import { Menu, X, FileText, FileCode, FileJson, Download } from "lucide-react";
 
 interface FileContents {
   html: string;
@@ -44,7 +44,6 @@ const CodeClient: React.FC = () => {
           throw new Error(data.error || "Failed to fetch project details");
         }
 
-        // setUserProject(data.project);
         setFileContents({
           html: data.project.files.html || "",
           css: data.project.files.css || "",
@@ -60,20 +59,20 @@ const CodeClient: React.FC = () => {
     fetchProjectDetails();
   }, [params.project_name, params.username]);
 
-const combinedCode = useMemo(() => {
+  const combinedCode = useMemo(() => {
     const { html, css, javascript } = fileContents;
     return `
-            <!DOCTYPE html>
-            <html>
-              <head>
-                <style>${css}</style>
-              </head>
-              <body>
-                ${html.replace(/<!DOCTYPE html>|<\/?html>|<\/?body>/g, "")}
-                <script>${javascript}</script>
-              </body>
-            </html>
-          `;
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>${css}</style>
+        </head>
+        <body>
+          ${html.replace(/<!DOCTYPE html>|<\/?html>|<\/?body>/g, "")}
+          <script>${javascript}</script>
+        </body>
+      </html>
+    `;
   }, [fileContents]);
 
   const handleDownloadFile = async () => {
@@ -104,57 +103,50 @@ const combinedCode = useMemo(() => {
     return <WebsiteLoader />;
   }
 
-  console.log(combinedCode);
-
   return (
     <div className="h-screen w-screen flex">
       {/* Sidebar */}
-      {isSidebarOpen && (
-        <div className="w-60 bg-gray-800 p-4 flex flex-col space-y-4 transition-all">
-          <button
-            onClick={() => setIsSidebarOpen(false)}
-            className="text-white flex items-center justify-end pr-2 hover:text-gray-400"
-          >
-            <X size={20} />
-          </button>
-          {[
-            { name: "html", icon: <FileText size={20} /> },
-            { name: "css", icon: <FileCode size={20} /> },
-            { name: "javascript", icon: <FileJson size={20} /> },
-          ].map(({ name, icon }) => (
-            <button
-              key={name}
-              className={`flex items-center space-x-2 px-4 py-2 rounded text-white transition-all ${
-                activeTab === name
-                  ? "bg-blue-500"
-                  : "bg-gray-700 hover:bg-gray-600"
-              }`}
-              onClick={() => setActiveTab(name as keyof FileContents)}
-            >
-              {icon}
-              <span>{name.toUpperCase()}</span>
-            </button>
-          ))}
-          <button
-            onClick={handleDownloadFile}
-            className="mt-auto px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded text-center"
-          >
-            Download Files
-          </button>
-        </div>
-      )}
-
-      {/* Sidebar Toggle Button */}
-      {!isSidebarOpen && (
+      <div
+        className={`bg-gray-800 p-4 flex flex-col space-y-4 transition-all ${
+          isSidebarOpen ? "w-60" : "w-16"
+        }`}
+      >
         <button
-          onClick={() => setIsSidebarOpen(true)}
-          className="text-white bg-gray-800 p-2 rounded-r absolute top-4 left-0"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="text-white flex items-center justify-end hover:text-gray-400"
         >
-          <Menu size={24} />
+          {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
-      )}
+        {["html", "css", "javascript"].map((name) => (
+          <button
+            key={name}
+            className={`flex items-center ${
+              isSidebarOpen ? "space-x-2 px-4" : "justify-center"
+            } py-2 rounded text-white transition-all ${
+              activeTab === name
+                ? "bg-blue-500"
+                : "bg-gray-700 hover:bg-gray-600"
+            }`}
+            onClick={() => setActiveTab(name as keyof FileContents)}
+          >
+            {name === "html" && <FileText size={20} />}
+            {name === "css" && <FileCode size={20} />}
+            {name === "javascript" && <FileJson size={20} />}
+            {isSidebarOpen && <span>{name.toUpperCase()}</span>}
+          </button>
+        ))}
+        <button
+          onClick={handleDownloadFile}
+          className={`mt-auto flex items-center justify-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded ${
+            isSidebarOpen ? "" : "w-full"
+          }`}
+        >
+          {isSidebarOpen ? "Download Files" : <Download size={20} />}
+        </button>
+      </div>
 
-      <ResizablePanelGroup direction="horizontal" className="h-screen w-full">
+      {/* Main Content */}
+      <ResizablePanelGroup direction="horizontal" className="flex-1">
         {/* Code Editor Panel */}
         <ResizablePanel
           defaultSize={50}
@@ -178,6 +170,8 @@ const combinedCode = useMemo(() => {
           />
         </ResizablePanel>
 
+        <ResizableHandle withHandle />
+
         {/* Live Preview Panel */}
         <ResizablePanel
           defaultSize={50}
@@ -193,12 +187,11 @@ const combinedCode = useMemo(() => {
           />
         </ResizablePanel>
       </ResizablePanelGroup>
+
       {/* Floating Ball */}
       <div className="fixed bottom-6 right-6 group">
         <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center shadow-lg cursor-pointer relative transition-all duration-300 hover:scale-110">
           <span className="text-white text-xl font-bold">⚡</span>
-
-          {/* Tooltip (now on the left) */}
           <div className="absolute right-full mr-3 w-max px-3 py-1 text-sm bg-gray-900 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             Powered by CodeVault
           </div>
