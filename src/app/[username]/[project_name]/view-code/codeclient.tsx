@@ -141,7 +141,7 @@ const CodeClient: React.FC = () => {
             isSidebarOpen ? "" : "w-full"
           }`}
         >
-          {isSidebarOpen ? "Download Files" : <Download size={20} />}
+          {isSidebarOpen ? "Download Files" : <Download color="black" size={20} />}
         </button>
       </div>
 
