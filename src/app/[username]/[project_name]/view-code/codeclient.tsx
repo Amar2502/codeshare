@@ -4,6 +4,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import Editor from "@monaco-editor/react";
+import WebsiteLoader from "../WebsiteLoader";
+import JSZip from "jszip";
+import { toast } from "sonner";
+import { Menu, X, FileText, FileCode, FileJson } from "lucide-react";
 
 interface FileContents {
   html: string;
@@ -19,6 +23,7 @@ const CodeClient: React.FC = () => {
     javascript: "",
   });
   const [activeTab, setActiveTab] = useState<keyof FileContents>("html");
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
   const params = useParams<{ username: string; project_name: string }>();
 
@@ -27,9 +32,7 @@ const CodeClient: React.FC = () => {
       try {
         setIsLoading(true);
         const res = await fetch(
-          `/api/shareproject?user_name=${params.username}&project_name=${encodeURIComponent(
-            params.project_name
-          )}`
+          `/api/shareproject?user_name=${params.username}&project_name=${encodeURIComponent(params.project_name)}`
         );
 
         const data = await res.json();
@@ -69,57 +72,110 @@ const CodeClient: React.FC = () => {
     `;
   }, [fileContents]);
 
+  const handleDownloadFile = async () => {
+    const zip = new JSZip();
+
+    zip.file("index.html", fileContents.html);
+    zip.file("styles.css", fileContents.css);
+    zip.file("script.js", fileContents.javascript);
+
+    const blob = await zip.generateAsync({ type: "blob" });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "project.zip";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(link.href);
+
+    toast("Project files downloaded successfully", {
+      style: { backgroundColor: "#8DF19E", color: "#1A1325" },
+    });
+  };
+
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <WebsiteLoader />;
   }
 
   return (
-    <ResizablePanelGroup direction="horizontal" className="h-screen w-screen">
-      {/* Sidebar Panel */}
-      <ResizablePanel defaultSize={15} minSize={10} maxSize={20} className="bg-gray-800 p-4">
-        <div className="flex flex-col space-y-4">
-          {["html", "css", "javascript"].map((tab) => (
+    <div className="h-screen w-screen flex">
+      {/* Sidebar */}
+      {isSidebarOpen && (
+        <div className="w-60 bg-gray-800 p-4 flex flex-col space-y-4 transition-all">
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="text-white flex items-center justify-end pr-2 hover:text-gray-400"
+          >
+            <X size={20} />
+          </button>
+          {[
+            { name: "html", icon: <FileText size={20} /> },
+            { name: "css", icon: <FileCode size={20} /> },
+            { name: "javascript", icon: <FileJson size={20} /> },
+          ].map(({ name, icon }) => (
             <button
-              key={tab}
-              className={`px-4 py-2 rounded text-white ${
-                activeTab === tab ? "bg-blue-500" : "bg-gray-700 hover:bg-gray-600"
+              key={name}
+              className={`flex items-center space-x-2 px-4 py-2 rounded text-white transition-all ${
+                activeTab === name ? "bg-blue-500" : "bg-gray-700 hover:bg-gray-600"
               }`}
-              onClick={() => setActiveTab(tab as keyof FileContents)}
+              onClick={() => setActiveTab(name as keyof FileContents)}
             >
-              {tab.toUpperCase()}
+              {icon}
+              <span>{name.toUpperCase()}</span>
             </button>
           ))}
+          <button
+            onClick={handleDownloadFile}
+            className="mt-auto px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded text-center"
+          >
+            Download Files
+          </button>
         </div>
-      </ResizablePanel>
+      )}
 
-      {/* Code Editor Panel */}
-      <ResizablePanel defaultSize={40} minSize={30} maxSize={60} className="bg-gray-900">
-        <Editor
-          height="100%"
-          language={activeTab}
-          value={fileContents[activeTab]}
-          theme="vs-dark"
-          options={{
-            minimap: { enabled: false },
-            scrollBeyondLastLine: false,
-            wordWrap: "on",
-          }}
-          onChange={(value) =>
-            setFileContents((prev) => ({ ...prev, [activeTab]: value || "" }))
-          }
-        />
-      </ResizablePanel>
+      {/* Sidebar Toggle Button */}
+      {!isSidebarOpen && (
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="text-white bg-gray-800 p-2 rounded-r absolute top-4 left-0"
+        >
+          <Menu size={24} />
+        </button>
+      )}
 
-      {/* Live Preview Panel */}
-      <ResizablePanel defaultSize={45} minSize={30} maxSize={60} className="relative">
-        <iframe
-          title="preview"
-          srcDoc={combinedCode}
-          className="w-full h-full border-none"
-          sandbox="allow-scripts allow-same-origin allow-forms"
-        />
-      </ResizablePanel>
-    </ResizablePanelGroup>
+      <ResizablePanelGroup direction="horizontal" className="h-screen w-full">
+        {/* Code Editor Panel */}
+        <ResizablePanel defaultSize={50} minSize={30} maxSize={60} className="bg-gray-900">
+          <Editor
+            height="100%"
+            language={activeTab}
+            value={fileContents[activeTab]}
+            theme="vs-dark"
+            options={{
+              minimap: { enabled: false },
+              scrollBeyondLastLine: false,
+              wordWrap: "on",
+            }}
+            onChange={(value) =>
+              setFileContents((prev) => ({ ...prev, [activeTab]: value || "" }))
+            }
+          />
+        </ResizablePanel>
+
+        {/* Live Preview Panel */}
+        <ResizablePanel defaultSize={50} minSize={30} maxSize={60} className="relative">
+          <iframe
+            title="preview"
+            srcDoc={combinedCode}
+            className="w-full h-full border-none"
+            sandbox="allow-scripts allow-same-origin allow-forms"
+          />
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
   );
 };
 
