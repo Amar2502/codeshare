@@ -24,6 +24,7 @@ import {
   Eye,
   Menu,
   X,
+  Copy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -38,6 +39,7 @@ import JSZip from "jszip";
 import { redirect, useParams, useRouter } from "next/navigation";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -53,6 +55,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import EditorLoader from "./EditorLoader";
+import { Label } from "@/components/ui/label";
 
 type FileType = "html" | "css" | "js";
 
@@ -427,7 +430,7 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                   <Save className="h-4 w-4" />
                   <span>Save Project</span>
                 </Button>
-                
+
                 {/* Share Button */}
                 <Button
                   variant="ghost"
@@ -440,7 +443,7 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                   <Share className="h-4 w-4" />
                   <span>Share Project</span>
                 </Button>
-                
+
                 {/* Download Button */}
                 <Button
                   variant="ghost"
@@ -453,7 +456,7 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                   <Download className="h-4 w-4" />
                   <span>Download Files</span>
                 </Button>
-                
+
                 {/* View in New Tab Button */}
                 <Button
                   variant="ghost"
@@ -466,7 +469,7 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                   <PlayCircle className="h-4 w-4" />
                   <span>View in New Tab</span>
                 </Button>
-                
+
                 {/* Dashboard Button */}
                 <Button
                   variant="ghost"
@@ -731,8 +734,7 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                       <DialogHeader>
                         <DialogTitle>Share Project</DialogTitle>
                         <DialogDescription>
-                          Share your project with teammates or make it
-                          public.
+                          Share your project with teammates or make it public.
                         </DialogDescription>
                       </DialogHeader>
                     </DialogContent>
@@ -783,30 +785,48 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                   </TooltipTrigger>
                   <TooltipContent>Save Project</TooltipContent>
                 </Tooltip>
-
                 {/* Share Button */}
+
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-9 w-9 text-gray-300 hover:text-blue-500"
-                        >
-                          <Share className="h-5 w-5" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Share Project</TooltipContent>
-                    </Tooltip>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 text-gray-300 hover:text-blue-500"
+                    >
+                      <Share className="h-5 w-5" />
+                    </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-md bg-gray-900 text-white border border-gray-700">
+                  <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                      <DialogTitle>Share Project</DialogTitle>
+                      <DialogTitle>Share link</DialogTitle>
                       <DialogDescription>
-                        Share your project with teammates or make it public.
+                        Anyone who has this link will be able to view this.
                       </DialogDescription>
                     </DialogHeader>
+                    <div className="flex items-center space-x-2">
+                      <div className="grid flex-1 gap-2">
+                        <Label htmlFor="link" className="sr-only">
+                          Link
+                        </Label>
+                        <Input
+                          id="link"
+                          defaultValue="https://ui.shadcn.com/docs/installation"
+                          readOnly
+                        />
+                      </div>
+                      <Button type="submit" size="sm" className="px-3">
+                        <span className="sr-only">Copy</span>
+                        <Copy />
+                      </Button>
+                    </div>
+                    <DialogFooter className="sm:justify-start">
+                      <DialogClose asChild>
+                        <Button type="button" variant="secondary">
+                          Close
+                        </Button>
+                      </DialogClose>
+                    </DialogFooter>
                   </DialogContent>
                 </Dialog>
 
@@ -897,13 +917,18 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                         <Input
                           id="projectDescription"
                           value={projectDescription}
-                          onChange={(e) => setProjectDescription(e.target.value)}
+                          onChange={(e) =>
+                            setProjectDescription(e.target.value)
+                          }
                           className="bg-gray-800 border-gray-700 text-white"
                         />
                       </div>
                     </div>
                     <DialogFooter>
-                      <Button onClick={handleProjectDetailSave} className="bg-purple-600 hover:bg-purple-700 text-white">
+                      <Button
+                        onClick={handleProjectDetailSave}
+                        className="bg-purple-600 hover:bg-purple-700 text-white"
+                      >
                         Save Changes
                       </Button>
                     </DialogFooter>
