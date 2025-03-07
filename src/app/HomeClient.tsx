@@ -32,42 +32,45 @@ export default function HomePage() {
 
   console.log(hoverButton);
 
-const handleSignIn = async () => {
-  const width = 500;
-  const height = 600;
-  const left = (window.innerWidth - width) / 2;
-  const top = (window.innerHeight - height) / 2;
+  const handleSignIn = async (): Promise<void> => {
+    const width = 500;
+    const height = 600;
+    const left = (window.innerWidth - width) / 2;
+    const top = (window.innerHeight - height) / 2;
 
-  const popup = window.open(
-    "",
-    "GoogleSignIn",
-    `width=${width},height=${height},top=${top},scrollbars=no,resizable=no`
-  );
+    // Open a blank popup first
+    const popup: Window | null = window.open(
+      "",
+      "GoogleSignIn",
+      `width=${width},height=${height},top=${top},scrollbars=no,resizable=no`
+    );
 
-  if (!popup) {
-    alert("Popup blocked! Please allow popups.");
-    return;
-  }
-
-  try {
-    const { url } = await signIn("google", { redirect: false });
-
-    if (url) {
-      popup.location.href = url;
+    if (!popup) {
+      alert("Popup blocked! Please allow popups.");
+      return;
     }
 
-    const checkPopup = setInterval(() => {
-      if (popup.closed) {
-        clearInterval(checkPopup);
-        window.location.reload(); // Refresh parent window after login
-      }
-    }, 1000);
-  } catch (error) {
-    console.error("Error during sign-in:", error);
-    popup.close();
-  }
-};
+    try {
+      const response = await signIn("google", { redirect: false });
 
+      if (response?.url) {
+        popup.location.href = response.url;
+      } else {
+        console.error("Failed to get sign-in URL.");
+        popup.close();
+      }
+
+      const checkPopup = setInterval(() => {
+        if (!popup || popup.closed) {
+          clearInterval(checkPopup);
+          window.location.reload(); // Refresh parent window after login
+        }
+      }, 1000);
+    } catch (error) {
+      console.error("Error during sign-in:", error);
+      popup.close();
+    }
+  };
 
   const faqs = [
     {
