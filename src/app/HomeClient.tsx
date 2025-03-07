@@ -29,63 +29,12 @@ export default function HomePage() {
   const [hoverButton, setHoverButton] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredProject, setHoveredProject] = useState<number>();
+  const [isLoading, setIsLoading] = useState(false);
 
   console.log(hoverButton);
 
-  const handleSignIn = async (): Promise<void> => {
-    const width = 500;
-    const height = 600;
-    const left = (window.screen.width - width) / 2;
-    const top = (window.screen.height - height) / 2;
-  
-    // First get the auth URL before opening the popup
-    try {
-      const authUrl = await signIn("google", { redirect: false, callbackUrl: window.location.origin });
-      
-      if (!authUrl?.url) {
-        console.error("Failed to get sign-in URL");
-        alert("Authentication failed. Please try again.");
-        return;
-      }
-      
-      // Open the popup with the auth URL directly
-      const popup: Window | null = window.open(
-        authUrl.url,
-        "GoogleSignIn",
-        `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`
-      );
-  
-      if (!popup) {
-        alert("Popup blocked! Please allow popups for this site.");
-        return;
-      }
-  
-      // Listen for changes in the popup
-      const checkPopup = setInterval(() => {
-        try {
-          // This will throw an error if popup is on a different domain due to CORS
-          if (popup.closed) {
-            clearInterval(checkPopup);
-            // Check if the user is authenticated after popup closes
-            fetch('/api/auth/session')
-              .then(res => res.json())
-              .then(session => {
-                if (session?.user) {
-                  // User is authenticated, refresh the page
-                  window.location.reload();
-                }
-              })
-              .catch(err => console.error("Error checking session:", err));
-          }
-        } catch (e) {
-          console.log("error", e);
-          
-        }
-      }, 1000);
-    } catch (error) {
-      console.error("Error initiating sign-in:", error);
-      alert("Authentication failed. Please try again.");
-    }
+  const handleSignIn = async () => {
+    await signIn("google", { callbackUrl: "/" });
   };
 
   const faqs = [
@@ -171,6 +120,12 @@ export default function HomePage() {
     },
   };
 
+  const spinTransition = {
+    loop: Infinity,
+    ease: "linear",
+    duration: 1,
+  };
+
   return (
     <>
       <div className="min-h-screen bg-gradient-to-b from-[#0D0F21] to-[#141631] text-[#F8FAFC]">
@@ -242,9 +197,23 @@ export default function HomePage() {
                   onHoverStart={() => setHoverButton(true)}
                   onHoverEnd={() => setHoverButton(false)}
                   onClick={handleSignIn}
+                  disabled={isLoading}
                 >
-                  <Play className="h-5 w-5" />
-                  <span>Start Creating</span>
+                  {isLoading ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={spinTransition}
+                        className="h-5 w-5 border-2 border-white border-t-transparent rounded-full"
+                      />
+                      <span>Signing in...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="h-5 w-5" />
+                      <span>Start Creating</span>
+                    </>
+                  )}
                 </motion.button>
 
                 <div>
@@ -689,9 +658,23 @@ export default function HomePage() {
                 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSignIn}
+                disabled={isLoading}
               >
-                <Play className="h-5 w-5" />
-                <span>Start Creating</span>
+                {isLoading ? (
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={spinTransition}
+                      className="h-5 w-5 border-2 border-white border-t-transparent rounded-full"
+                    />
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-5 w-5" />
+                    <span>Start Creating</span>
+                  </>
+                )}
               </motion.button>
             </div>
           </motion.div>
