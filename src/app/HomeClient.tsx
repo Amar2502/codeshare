@@ -35,7 +35,6 @@ export default function HomePage() {
   const handleSignIn = async (): Promise<void> => {
     const width = 500;
     const height = 600;
-    const left = (window.innerWidth - width) / 2;
     const top = (window.innerHeight - height) / 2;
 
     // Open a blank popup first
