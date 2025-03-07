@@ -29,7 +29,7 @@ export default function HomePage() {
   const [hoverButton, setHoverButton] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredProject, setHoveredProject] = useState<number>();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // eslint-disable-line
 
   console.log(hoverButton);
 
