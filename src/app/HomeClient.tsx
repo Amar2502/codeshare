@@ -35,39 +35,56 @@ export default function HomePage() {
   const handleSignIn = async (): Promise<void> => {
     const width = 500;
     const height = 600;
-    const top = (window.innerHeight - height) / 2;
-
-    // Open a blank popup first
-    const popup: Window | null = window.open(
-      "",
-      "GoogleSignIn",
-      `width=${width},height=${height},top=${top},scrollbars=no,resizable=no`
-    );
-
-    if (!popup) {
-      alert("Popup blocked! Please allow popups.");
-      return;
-    }
-
+    const left = (window.screen.width - width) / 2;
+    const top = (window.screen.height - height) / 2;
+  
+    // First get the auth URL before opening the popup
     try {
-      const response = await signIn("google", { redirect: false });
-
-      if (response?.url) {
-        popup.location.href = response.url;
-      } else {
-        console.error("Failed to get sign-in URL.");
-        popup.close();
+      const authUrl = await signIn("google", { redirect: false, callbackUrl: window.location.origin });
+      
+      if (!authUrl?.url) {
+        console.error("Failed to get sign-in URL");
+        alert("Authentication failed. Please try again.");
+        return;
       }
-
+      
+      // Open the popup with the auth URL directly
+      const popup: Window | null = window.open(
+        authUrl.url,
+        "GoogleSignIn",
+        `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`
+      );
+  
+      if (!popup) {
+        alert("Popup blocked! Please allow popups for this site.");
+        return;
+      }
+  
+      // Listen for changes in the popup
       const checkPopup = setInterval(() => {
-        if (!popup || popup.closed) {
-          clearInterval(checkPopup);
-          window.location.reload(); // Refresh parent window after login
+        try {
+          // This will throw an error if popup is on a different domain due to CORS
+          if (popup.closed) {
+            clearInterval(checkPopup);
+            // Check if the user is authenticated after popup closes
+            fetch('/api/auth/session')
+              .then(res => res.json())
+              .then(session => {
+                if (session?.user) {
+                  // User is authenticated, refresh the page
+                  window.location.reload();
+                }
+              })
+              .catch(err => console.error("Error checking session:", err));
+          }
+        } catch (e) {
+          // CORS error - popup is on different domain, which is expected during auth flow
+          // Just continue checking if it's closed
         }
       }, 1000);
     } catch (error) {
-      console.error("Error during sign-in:", error);
-      popup.close();
+      console.error("Error initiating sign-in:", error);
+      alert("Authentication failed. Please try again.");
     }
   };
 
