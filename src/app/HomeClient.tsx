@@ -78,8 +78,8 @@ export default function HomePage() {
               .catch(err => console.error("Error checking session:", err));
           }
         } catch (e) {
-          // CORS error - popup is on different domain, which is expected during auth flow
-          // Just continue checking if it's closed
+          console.log("error", e);
+          
         }
       }, 1000);
     } catch (error) {
