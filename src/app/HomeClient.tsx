@@ -70,19 +70,19 @@ export default function HomePage() {
       title: "Portfolio Template",
       description: "A responsive portfolio website with dark mode",
       image: "/placeholder-portfolio.png",
-      sharelink: "https://codeshare.space/amar/Portfolio_Template/website",
+      sharelink: "https://codeshare.space/amar/Portfolio_Template/view-website",
     },
     {
       title: "Todo App",
       description: "Interactive task manager with local storage",
       image: "/placeholder-todo.png",
-      sharelink: "https://codeshare.space/amar/Todo_App/website",
+      sharelink: "https://codeshare.space/amar/Todo_App/view-website",
     },
     {
       title: "Landing Page",
       description: "Modern landing page with animations",
       image: "/placeholder-landing.png",
-      sharelink: "https://codeshare.space/amar/Landing_Page/website",
+      sharelink: "https://codeshare.space/amar/Landing_Page/view-code",
     },
   ];
 
