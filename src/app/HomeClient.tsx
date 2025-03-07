@@ -31,10 +31,30 @@ export default function HomePage() {
   const [hoveredProject, setHoveredProject] = useState<number>();
 
   console.log(hoverButton);
-  
 
   const handleSignIn = async () => {
-    await signIn("google", { callbackUrl: "/" });
+    const width = 500;
+    const height = 600;
+    const left = (window.innerWidth - width) / 2;
+    const top = (window.innerHeight - height) / 2;
+
+    const popup = window.open(
+      "/api/auth/signin/google", // NextAuth.js Google Sign-in route
+      "GoogleSignIn",
+      `width=${width},height=${height},top=${top},left=${left},scrollbars=no,resizable=no`
+    );
+
+    if (!popup) {
+      alert("Popup blocked! Please allow popups.");
+      return;
+    }
+
+    const checkPopup = setInterval(() => {
+      if (!popup || popup.closed) {
+        clearInterval(checkPopup);
+        window.location.href = "/"; // Redirect after login
+      }
+    }, 1000);
   };
 
   const faqs = [
@@ -55,8 +75,7 @@ export default function HomePage() {
     },
     {
       question: "Is CodeShare free to use?",
-      answer:
-        "Yes! CodeShare is completely free to use.",
+      answer: "Yes! CodeShare is completely free to use.",
     },
     {
       question: "What programming languages does CodeShare support?",
@@ -99,25 +118,26 @@ export default function HomePage() {
 
   const projectVariants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
+      transition: { duration: 0.6, ease: "easeOut" },
     },
-    hover: { 
+    hover: {
       y: -10,
       scale: 1.02,
-      boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-      transition: { duration: 0.3, ease: "easeOut" }
-    }
+      boxShadow:
+        "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+      transition: { duration: 0.3, ease: "easeOut" },
+    },
   };
-  
+
   const imageVariants = {
     hidden: { scale: 1 },
-    hover: { 
+    hover: {
       scale: 1.1,
-      transition: { duration: 0.5 }
-    }
+      transition: { duration: 0.5 },
+    },
   };
 
   return (
@@ -354,37 +374,45 @@ export default function HomePage() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#141631] to-transparent opacity-60"></div>
                     </motion.div>
-                    
-                    <motion.div 
+
+                    <motion.div
                       className="absolute top-3 right-3 bg-[#7C3AED] text-white p-1 px-2 rounded-full text-xs font-medium"
                       initial={{ opacity: 0, y: -10 }}
-                      animate={hoveredProject === index ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
+                      animate={
+                        hoveredProject === index
+                          ? { opacity: 1, y: 0 }
+                          : { opacity: 0, y: -10 }
+                      }
                       transition={{ duration: 0.3 }}
                     >
                       Live Demo
                     </motion.div>
                   </div>
-                  
+
                   <div className="p-5 flex-1 flex flex-col">
                     <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                    <p className="text-[#A1AFCF] mb-4 flex-1">{project.description}</p>
+                    <p className="text-[#A1AFCF] mb-4 flex-1">
+                      {project.description}
+                    </p>
                     <div className="flex justify-between items-center mt-auto">
                       <Link href={`${project.sharelink}`} passHref>
                         <motion.div
                           className="text-[#A78BFA] hover:text-[#C4B5FD] font-medium flex items-center group"
                           whileHover={{ x: 5 }}
                         >
-                          View Project 
+                          View Project
                           <ExternalLink className="h-4 w-4 ml-1 transition-transform duration-300 transform group-hover:translate-x-1" />
                         </motion.div>
                       </Link>
                     </div>
                   </div>
-                  
-                  <motion.div 
+
+                  <motion.div
                     className="h-1 bg-gradient-to-r from-[#7C3AED] to-[#EC4899]"
                     initial={{ scaleX: 0, originX: 0 }}
-                    animate={hoveredProject === index ? { scaleX: 1 } : { scaleX: 0 }}
+                    animate={
+                      hoveredProject === index ? { scaleX: 1 } : { scaleX: 0 }
+                    }
                     transition={{ duration: 0.4 }}
                   />
                 </motion.div>
@@ -394,7 +422,10 @@ export default function HomePage() {
         </section>
 
         {/* Features Section - Lighter (Level 3) */}
-        <section id="features" className="bg-gradient-to-b from-[#0D0F21] to-[#141631] text-[#F8FAFC] py-24">
+        <section
+          id="features"
+          className="bg-gradient-to-b from-[#0D0F21] to-[#141631] text-[#F8FAFC] py-24"
+        >
           <div className="container mx-auto px-4">
             <motion.h2
               className="text-3xl md:text-4xl font-bold text-center mb-6"
@@ -416,63 +447,64 @@ export default function HomePage() {
             </motion.p>
 
             <div className="grid md:grid-cols-3 gap-8">
-  {[
-    {
-      icon: <Code className="h-8 w-8 text-[#A78BFA]" />,
-      title: "Live Preview",
-      description:
-        "See your changes in real-time as you code with our instant preview feature.",
-    },
-    {
-      icon: <Share2 className="h-8 w-8 text-[#A78BFA]" />,
-      title: "Instant Sharing",
-      description:
-        "Share your projects with a simple link. No hosting or deployment needed.",
-    },
-    {
-      icon: <Database className="h-8 w-8 text-[#A78BFA]" />,
-      title: "No Git Required",
-      description:
-        "Skip the version control complexities. We handle everything for you.",
-    },
-    {
-      icon: <Layout className="h-8 w-8 text-[#A78BFA]" />,
-      title: "Easy-to-Use Interface",
-      description:
-        "A simple and intuitive interface designed for beginner and experienced developers alike.",
-    },
-    {
-      icon: <Folder className="h-8 w-8 text-[#A78BFA]" />,
-      title: "Folder & File Management",
-      description:
-        "Organize your projects efficiently with an intuitive folder and file structure.",
-    },
-    {
-      icon: <Shield className="h-8 w-8 text-[#A78BFA]" />,
-      title: "Secure Storage",
-      description:
-        "Your projects are securely stored and backed up regularly.",
-    },
-  ].map((feature, index) => (
-    <motion.div
-      key={index}
-      className="bg-[#181C41] p-6 rounded-xl border border-[#242856] hover:border-[#A78BFA] transition-all duration-300"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)" }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1 }}
-    >
-      <div className="bg-[#141631] inline-block p-4 rounded-lg mb-4">
-        {feature.icon}
-      </div>
-      <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-      <p className="text-[#CBD5E1]">{feature.description}</p>
-    </motion.div>
-  ))}
-</div>
-
-
+              {[
+                {
+                  icon: <Code className="h-8 w-8 text-[#A78BFA]" />,
+                  title: "Live Preview",
+                  description:
+                    "See your changes in real-time as you code with our instant preview feature.",
+                },
+                {
+                  icon: <Share2 className="h-8 w-8 text-[#A78BFA]" />,
+                  title: "Instant Sharing",
+                  description:
+                    "Share your projects with a simple link. No hosting or deployment needed.",
+                },
+                {
+                  icon: <Database className="h-8 w-8 text-[#A78BFA]" />,
+                  title: "No Git Required",
+                  description:
+                    "Skip the version control complexities. We handle everything for you.",
+                },
+                {
+                  icon: <Layout className="h-8 w-8 text-[#A78BFA]" />,
+                  title: "Easy-to-Use Interface",
+                  description:
+                    "A simple and intuitive interface designed for beginner and experienced developers alike.",
+                },
+                {
+                  icon: <Folder className="h-8 w-8 text-[#A78BFA]" />,
+                  title: "Folder & File Management",
+                  description:
+                    "Organize your projects efficiently with an intuitive folder and file structure.",
+                },
+                {
+                  icon: <Shield className="h-8 w-8 text-[#A78BFA]" />,
+                  title: "Secure Storage",
+                  description:
+                    "Your projects are securely stored and backed up regularly.",
+                },
+              ].map((feature, index) => (
+                <motion.div
+                  key={index}
+                  className="bg-[#181C41] p-6 rounded-xl border border-[#242856] hover:border-[#A78BFA] transition-all duration-300"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  whileHover={{
+                    y: -5,
+                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)",
+                  }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <div className="bg-[#141631] inline-block p-4 rounded-lg mb-4">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                  <p className="text-[#CBD5E1]">{feature.description}</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -543,7 +575,10 @@ export default function HomePage() {
         </section>
 
         {/* FAQ Section - Lightest (Level 5) */}
-        <section id="faq" className="bg-gradient-to-b from-[#0D0F21] to-[#141631] text-[#F8FAFC] py-24">
+        <section
+          id="faq"
+          className="bg-gradient-to-b from-[#0D0F21] to-[#141631] text-[#F8FAFC] py-24"
+        >
           <div className="container mx-auto px-4">
             <motion.h2
               className="text-3xl md:text-4xl font-bold text-center mb-6"
@@ -551,8 +586,7 @@ export default function HomePage() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
             >
-              Frequently Asked{" "}
-              <span className="text-[#C4B5FD]">Questions</span>
+              Frequently Asked <span className="text-[#C4B5FD]">Questions</span>
             </motion.h2>
 
             <motion.p
@@ -575,7 +609,10 @@ export default function HomePage() {
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <AccordionItem value={`item-${index}`} className="border border-[#242960] rounded-lg bg-[#242960] px-4">
+                    <AccordionItem
+                      value={`item-${index}`}
+                      className="border border-[#242960] rounded-lg bg-[#242960] px-4"
+                    >
                       <AccordionTrigger className="text-lg font-medium py-4 hover:no-underline">
                         {faq.question}
                       </AccordionTrigger>
@@ -603,7 +640,7 @@ export default function HomePage() {
               <div className="absolute top-10 left-10 w-40 h-40 rounded-full bg-white"></div>
               <div className="absolute bottom-10 right-10 w-60 h-60 rounded-full bg-white"></div>
             </div>
-            
+
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
                 Ready to start creating?
@@ -615,7 +652,10 @@ export default function HomePage() {
 
               <motion.button
                 className="bg-white text-[#4C1D95] py-3 px-10 rounded-lg font-medium text-lg inline-flex items-center space-x-2 shadow-lg"
-                whileHover={{ scale: 1.05, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+                }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSignIn}
               >
