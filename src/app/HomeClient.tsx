@@ -32,30 +32,42 @@ export default function HomePage() {
 
   console.log(hoverButton);
 
-  const handleSignIn = async () => {
-    const width = 500;
-    const height = 600;
-    const left = (window.innerWidth - width) / 2;
-    const top = (window.innerHeight - height) / 2;
+const handleSignIn = async () => {
+  const width = 500;
+  const height = 600;
+  const left = (window.innerWidth - width) / 2;
+  const top = (window.innerHeight - height) / 2;
 
-    const popup = window.open(
-      "/api/auth/signin/google", // NextAuth.js Google Sign-in route
-      "GoogleSignIn",
-      `width=${width},height=${height},top=${top},left=${left},scrollbars=no,resizable=no`
-    );
+  const popup = window.open(
+    "",
+    "GoogleSignIn",
+    `width=${width},height=${height},top=${top},scrollbars=no,resizable=no`
+  );
 
-    if (!popup) {
-      alert("Popup blocked! Please allow popups.");
-      return;
+  if (!popup) {
+    alert("Popup blocked! Please allow popups.");
+    return;
+  }
+
+  try {
+    const { url } = await signIn("google", { redirect: false });
+
+    if (url) {
+      popup.location.href = url;
     }
 
     const checkPopup = setInterval(() => {
-      if (!popup || popup.closed) {
+      if (popup.closed) {
         clearInterval(checkPopup);
-        window.location.href = "/"; // Redirect after login
+        window.location.reload(); // Refresh parent window after login
       }
     }, 1000);
-  };
+  } catch (error) {
+    console.error("Error during sign-in:", error);
+    popup.close();
+  }
+};
+
 
   const faqs = [
     {
