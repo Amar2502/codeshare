@@ -11,5 +11,4 @@ export default async function EditorPage() {
     redirect(`/${session.user.name}`);
   }
   return <HomePage />;
-  // return <h1>Hello World</h1>;
 }
