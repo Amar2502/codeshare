@@ -1,7 +1,4 @@
-// app/dashboard/WorkspaceDashboardClient.tsx
-"use client";
-
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   Plus,
@@ -56,10 +53,45 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
 }) => {
   const router = useRouter();
   const params = useParams();
+  const [projectNameError, setProjectNameError] = useState<string>("");
+  const [projectDescError, setProjectDescError] = useState<string>("");
+  const [formOpen, setFormOpen] = useState<boolean>(false);
 
   if(params.username!=username) {
     router.replace(`/${username}`)
   }
+
+  const validateProjectForm = (formData: FormData): boolean => {
+    let isValid = true;
+    const projectName = formData.get("pname") as string;
+    const projectDesc = formData.get("pdesc") as string;
+
+    // Reset errors
+    setProjectNameError("");
+    setProjectDescError("");
+
+    // Check for spaces in project name
+    if (projectName && projectName.includes(" ")) {
+      setProjectNameError("Project name cannot contain spaces");
+      isValid = false;
+    }
+
+    // Check if description is empty
+    if (!projectDesc || projectDesc.trim() === "") {
+      setProjectDescError("Project description is required");
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const handleSubmit = async (formData: FormData) => {
+    if (validateProjectForm(formData)) {
+      const response = await createNewProject(formData);
+      setFormOpen(false);
+      redirect(`${response.redirect_url}`);
+    }
+  };
 
   const handleDeleteProject = async (project_name: string) => {
     try {
@@ -97,6 +129,12 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
     await signOut();
   };
 
+  const closeDialog = () => {
+    setFormOpen(false);
+    setProjectNameError("");
+    setProjectDescError("");
+  };
+
   return projects.length > 0 ? (
     <div className="flex h-screen bg-[#0D0F21]">
       <div className="flex-1 overflow-auto">
@@ -109,7 +147,7 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
               </span>
             </div>
             <div className="flex items-center gap-4">
-              <Dialog>
+              <Dialog open={formOpen} onOpenChange={setFormOpen}>
                 <DialogTrigger className="bg-[#7b5dd8] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-[#8B5CF6] transition-colors shadow-md cursor-pointer">
                   <Plus size={20} />
                   New Project
@@ -120,14 +158,11 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                       Create a New Project
                     </DialogTitle>
                     <DialogDescription className="text-gray-400">
-                      Please provide the project name and description.
+                      Please provide the project name (no spaces) and description.
                     </DialogDescription>
                   </DialogHeader>
                   <form
-                    action={async (formData) => {
-                      const response = await createNewProject(formData);
-                      redirect(`${response.redirect_url}`);
-                    }}
+                    action={handleSubmit}
                   >
                     <div className="space-y-4">
                       <div>
@@ -135,11 +170,23 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                           Project Name
                         </label>
                         <Input
-                          placeholder="Enter project name"
+                          placeholder="Enter project name (no spaces)"
                           className="mt-2 bg-[#232741] border-[#2C314E] text-white"
                           name="pname"
                           required
+                          pattern="[^\s]+"
+                          title="Project name cannot contain spaces"
+                          onChange={(e) => {
+                            if (e.target.value.includes(" ")) {
+                              setProjectNameError("Project name cannot contain spaces");
+                            } else {
+                              setProjectNameError("");
+                            }
+                          }}
                         />
+                        {projectNameError && (
+                          <p className="text-red-500 text-sm mt-1">{projectNameError}</p>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-300">
@@ -150,11 +197,31 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                           className="mt-2 p-2 rounded-md w-full min-h-16 bg-[#232741] border-[#2C314E] text-white outline-none"
                           name="pdesc"
                           required
+                          onChange={(e) => {
+                            if (!e.target.value.trim()) {
+                              setProjectDescError("Project description is required");
+                            } else {
+                              setProjectDescError("");
+                            }
+                          }}
                         />
+                        {projectDescError && (
+                          <p className="text-red-500 text-sm mt-1">{projectDescError}</p>
+                        )}
                       </div>
                     </div>
-                    <div className="mt-4 flex justify-end">
-                      <button className="bg-[#6c53b7] text-white px-6 py-2 rounded-md hover:bg-[#8B5CF6] transition-colors">
+                    <div className="mt-4 flex justify-end gap-2">
+                      <button 
+                        type="button" 
+                        onClick={closeDialog}
+                        className="bg-[#232741] text-white px-6 py-2 rounded-md hover:bg-[#2C314E] transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button 
+                        type="submit" 
+                        className="bg-[#6c53b7] text-white px-6 py-2 rounded-md hover:bg-[#8B5CF6] transition-colors"
+                      >
                         Create Project
                       </button>
                     </div>
@@ -177,10 +244,6 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                   align="end"
                   className="w-36 cursor-pointer"
                 >
-                  {/* <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  Change Profile Details
-                </DropdownMenuItem> */}
                   <DropdownMenuItem
                     onClick={handleSignOut}
                     className="text-red-500"
@@ -257,7 +320,7 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
         <h2 className="text-gray-400 mt-4 text-lg">
           Kickstart your journey by creating your first project!
         </h2>
-        <Dialog>
+        <Dialog open={formOpen} onOpenChange={setFormOpen}>
           <DialogTrigger className="mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-5 py-3 rounded-xl flex items-center gap-3 hover:opacity-90 transition-all duration-300 shadow-lg cursor-pointer">
             <Plus size={22} />
             <span className="text-lg font-medium">New Project</span>
@@ -268,14 +331,11 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                 Create a New Project
               </DialogTitle>
               <DialogDescription className="text-gray-400">
-                Please provide the project name and description.
+                Please provide the project name (no spaces) and description.
               </DialogDescription>
             </DialogHeader>
             <form
-              action={async (formData) => {
-                const response = await createNewProject(formData);
-                redirect(`${response.redirect_url}`);
-              }}
+              action={handleSubmit}
               className="space-y-6"
             >
               <div>
@@ -283,10 +343,23 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                   Project Name
                 </label>
                 <Input
-                  placeholder="Enter project name"
+                  placeholder="Enter project name (no spaces)"
                   className="mt-2 bg-[#232741] border border-[#2C314E] text-white rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-purple-600"
                   name="pname"
+                  required
+                  pattern="[^\s]+"
+                  title="Project name cannot contain spaces"
+                  onChange={(e) => {
+                    if (e.target.value.includes(" ")) {
+                      setProjectNameError("Project name cannot contain spaces");
+                    } else {
+                      setProjectNameError("");
+                    }
+                  }}
                 />
+                {projectNameError && (
+                  <p className="text-red-500 text-sm mt-1">{projectNameError}</p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300">
@@ -296,10 +369,31 @@ const WorkspaceDashboardClient: React.FC<WorkspaceDashboardClientProps> = ({
                   placeholder="Enter project description"
                   className="mt-2 p-3 rounded-lg w-full min-h-[80px] bg-[#232741] border border-[#2C314E] text-white outline-none focus:ring-2 focus:ring-purple-600"
                   name="pdesc"
+                  required
+                  onChange={(e) => {
+                    if (!e.target.value.trim()) {
+                      setProjectDescError("Project description is required");
+                    } else {
+                      setProjectDescError("");
+                    }
+                  }}
                 />
+                {projectDescError && (
+                  <p className="text-red-500 text-sm mt-1">{projectDescError}</p>
+                )}
               </div>
-              <div className="mt-4 flex justify-end">
-                <button className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-all duration-300">
+              <div className="mt-4 flex justify-end gap-2">
+                <button 
+                  type="button" 
+                  onClick={closeDialog}
+                  className="bg-[#232741] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#2C314E] transition-all duration-300"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-all duration-300"
+                >
                   Create Project
                 </button>
               </div>

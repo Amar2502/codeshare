@@ -93,7 +93,7 @@ const WebsiteClient = () => {
 
             {/* Tooltip (now on the left) */}
             <div className="absolute right-full mr-3 w-max px-3 py-1 text-sm bg-gray-900 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              Powered by CodeVault
+              Powered by CodeShare
             </div>
           </div>
         </div>

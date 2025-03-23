@@ -193,7 +193,7 @@ const CodeClient: React.FC = () => {
         <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center shadow-lg cursor-pointer relative transition-all duration-300 hover:scale-110">
           <span className="text-white text-xl font-bold">⚡</span>
           <div className="absolute right-full mr-3 w-max px-3 py-1 text-sm bg-gray-900 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            Powered by CodeVault
+            Powered by CodeShare
           </div>
         </div>
       </div>
