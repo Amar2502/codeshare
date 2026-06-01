@@ -31,7 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             await User.create({
               name: username,
               email: profile?.email,
-              image: profile?.picture || "",
+              image: (profile as any)?.picture || "",
               projects: [], // Ensure projects is always an array for new users
             });
 
