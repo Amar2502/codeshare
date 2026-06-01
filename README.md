@@ -38,7 +38,7 @@
 
 ## 🔗 Getting Started
 
-Simply visit [codeshare](https://codeshare.space) to start creating.!
+Simply visit [codeshare](https://codeshare-delta.vercel.app) to start creating.!
 
 ## 📋 Upcoming Features
 

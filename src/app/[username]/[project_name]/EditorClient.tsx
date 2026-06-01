@@ -827,7 +827,7 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                           </Label>
                           <Input
                             id="website-link"
-                            value={`https://codeshare.space/${params.username}/${params.project_name}/view-website`}
+                            value={`https://codeshare-delta.vercel.app/${params.username}/${params.project_name}/view-website`}
                             readOnly
                             className="bg-gray-800 text-gray-300 border-gray-700"
                           />
@@ -836,7 +836,7 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                           size="sm"
                           className="px-3 bg-gray-700 hover:bg-gray-600"
                           onClick={() =>
-                            copyToClipboard(`https://codeshare.space/${params.username}/${params.project_name}/view-website`, "website")
+                            copyToClipboard(`https://codeshare-delta.vercel.app/${params.username}/${params.project_name}/view-website`, "website")
                           }
                           aria-label="Copy Website Link"
                         >
@@ -862,7 +862,7 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                           </Label>
                           <Input
                             id="code-link"
-                            value={`https://codeshare.space/${params.username}/${params.project_name}/view-code`}
+                            value={`https://codeshare-delta.vercel.app/${params.username}/${params.project_name}/view-code`}
                             readOnly
                             className="bg-gray-800 text-gray-300 border-gray-700"
                           />
@@ -870,7 +870,7 @@ const EditorClient = ({ loggedIn_name }: EditorClientProps) => {
                         <Button
                           size="sm"
                           className="px-3 bg-gray-700 hover:bg-gray-600"
-                          onClick={() => copyToClipboard(`https://codeshare.space/${params.username}/${params.project_name}/view-code`, "code")}
+                          onClick={() => copyToClipboard(`https://codeshare-delta.vercel.app/${params.username}/${params.project_name}/view-code`, "code")}
                           aria-label="Copy Code & Website Link"
                         >
                           <Copy className="h-4 w-4" />

@@ -69,19 +69,19 @@ export default function HomePage() {
       title: "Portfolio Template",
       description: "A responsive portfolio website with dark mode",
       image: "/placeholder-portfolio.png",
-      sharelink: "https://codeshare.space/amar/Portfolio_Template/view-website",
+      sharelink: "https://codeshare-delta.vercel.app/amar/Portfolio_Template/view-website",
     },
     {
       title: "Todo App",
       description: "Interactive task manager with local storage",
       image: "/placeholder-todo.png",
-      sharelink: "https://codeshare.space/amar/Todo_App/view-website",
+      sharelink: "https://codeshare-delta.vercel.app/amar/Todo_App/view-website",
     },
     {
       title: "Landing Page",
       description: "Modern landing page with animations",
       image: "/placeholder-landing.png",
-      sharelink: "https://codeshare.space/amar/Landing_Page/view-code",
+      sharelink: "https://codeshare-delta.vercel.app/amar/Landing_Page/view-code",
     },
   ];
 
