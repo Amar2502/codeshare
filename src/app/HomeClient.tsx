@@ -66,10 +66,10 @@ export default function HomePage() {
 
   const projects = [
     {
-      title: "Portfolio Template",
-      description: "A responsive portfolio website with dark mode",
-      image: "/placeholder-portfolio.png",
-      sharelink: "https://codeshare-delta.vercel.app/amar/Portfolio_Template/view-website",
+      title: "GradPath Online",
+      description: "Professional Guide to Distance Graduate Education",
+      image: "/placeholder-gradpath.png",
+      sharelink: "https://codeshare-delta.vercel.app/amar/Online_Degree/view-website",
     },
     {
       title: "Todo App",
@@ -78,10 +78,10 @@ export default function HomePage() {
       sharelink: "https://codeshare-delta.vercel.app/amar/Todo_App/view-website",
     },
     {
-      title: "Landing Page",
-      description: "Modern landing page with animations",
-      image: "/placeholder-landing.png",
-      sharelink: "https://codeshare-delta.vercel.app/amar/Landing_Page/view-code",
+      title: "IEEEPublish",
+      description: "How an IEEE Paper Gets Published",
+      image: "/placeholder-ieee.png",
+      sharelink: "https://codeshare-delta.vercel.app/amar/IEEE_Journey/view-code",
     },
   ];
 
